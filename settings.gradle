@@ -1,7 +1,9 @@
 rootProject.name = 'sasystem'
 include 'customer'
-include 'order'
-include 'Bean'
-include 'bean'
 include 'common'
-include 'item'
+include 'product'
+include 'product:product-api'
+findProject(':product:product-api')?.name = 'product-api'
+include 'product:product-service'
+findProject(':product:product-service')?.name = 'product-service'
+

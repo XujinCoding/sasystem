@@ -21,7 +21,7 @@ buildscript {
 
 //配置全局, 包括root项目和子项目
 allprojects {
-    group 'com.atguigu'
+    group 'com.sa'
     version '1.0-SNAPSHOT'
 
 
@@ -54,8 +54,13 @@ subprojects {
 
     //公用的依赖
     dependencies {
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+        api 'io.github.openfeign:feign-jaxrs2:10.4.0'
+        annotationProcessor 'org.projectlombok:lombok:1.18.2'
+        implementation 'io.swagger:swagger-jaxrs:1.6.2'
+        compileOnly 'org.projectlombok:lombok:1.18.12'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
+        testCompileOnly 'org.projectlombok:lombok:1.18.2'
+
     }
 
     test {
@@ -78,9 +83,6 @@ subprojects {
 }
 
 
-project(':bean'){
-    description("公共模块:存放具体事例")
-}
 
 project(":common"){
     description("公共模块:存放微服务常用的工具类")
@@ -92,10 +94,8 @@ project(":common"){
         api 'io.springfox:springfox-swagger2'
         api 'io.springfox:springfox-swagger-ui'
         api 'io.jsonwebtoken:jjwt'
-
         api 'org.springframework.cloud:spring-cloud-starter-openfeign'
-        api 'org.springframework.cloud:spring-cloud-starter-alibaba-sentinel'
-        api 'org.springframework.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+//        api 'org.springframework.cloud:spring-cloud-starter-alibaba-sentinel'
 
     }
 }
@@ -108,34 +108,12 @@ project(":customer"){
 
     dependencies {
         api 'org.springframework.boot:spring-boot-starter-web'
-        api project(':bean')
+//        api project(':bean')
+
         api project(':common')
+        implementation 'com.oracle.database.jdbc:ojdbc8:21.1.0.0'
+
     }
 }
-project(":item"){
-    description("客户模块")
-    apply plugin: 'org.springframework.boot'
-    apply plugin : 'java-library'
-    apply plugin: 'org.springframework.boot'
-
-    dependencies {
-        api 'org.springframework.boot:spring-boot-starter-web'
-        api project(':bean')
-        api project(':common')
-    }
-}
-project(":order"){
-    description("客户模块")
-    apply plugin: 'org.springframework.boot'
-    apply plugin : 'java-library'
-    apply plugin: 'org.springframework.boot'
-
-    dependencies {
-        api 'org.springframework.boot:spring-boot-starter-web'
-        api project(':bean')
-        api project(':common')
-    }
-}
-
 
 

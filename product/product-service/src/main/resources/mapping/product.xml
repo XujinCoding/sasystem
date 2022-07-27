@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sa.mapper.mybaits.ProductMapper">
+
+    <select id="getAll" resultType="com.sa.domain.Product">
+        SELECT * FROM PRODUCT
+
+    </select>
+    <select id="getProductById" resultType="com.sa.domain.Product">
+        select * from PRODUCT where PRODUCT_ID=#{productId}
+    </select>
+</mapper>
