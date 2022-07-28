@@ -17,10 +17,8 @@ public class LoginController {
 
     @RequestMapping(value = "product/all", method = RequestMethod.GET)
     @ResponseBody
-    public void getProductInfos(){
+    public List<ProductDTO> getProductInfos(){
         List<ProductDTO> dtos = productService.getAll();
-//        System.out.println(dtos);
-        System.out.println("ok");
-
+        return dtos;
     }
 }

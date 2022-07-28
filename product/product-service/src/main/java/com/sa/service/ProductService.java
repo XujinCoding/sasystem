@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service("productService")
 public class ProductService implements IProductService {
     @Autowired
     private ProductMapper productMapper;

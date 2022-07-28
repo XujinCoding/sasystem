@@ -54,6 +54,7 @@ subprojects {
 
     //公用的依赖
     dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-jersey:2.7.2'
         implementation 'org.glassfish.jersey.core:jersey-server:2.29.1'
         api 'io.github.openfeign:feign-jaxrs2:10.4.0'
         annotationProcessor 'org.projectlombok:lombok:1.18.2'
