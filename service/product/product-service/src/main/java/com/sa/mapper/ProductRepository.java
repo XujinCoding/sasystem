@@ -1,15 +1,11 @@
 package com.sa.mapper;
 
 import com.sa.domain.Product;
-import com.sa.product.dto.ProductDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,String>, JpaSpecificationExecutor<Product> {
@@ -21,11 +17,6 @@ public interface ProductRepository extends JpaRepository<Product,String>, JpaSpe
 //    @Modifying()//使用这个注解, @Query注解中就可以写修改语句
     @Query(value = "select * from PRODUCT where PRODUCT_ID=:productId",nativeQuery = true)
     Product getProduct1(@Param("productId") Long productId);
-
-
-
-
-
 
 
 }

@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: product-ui
+
+# feign : FeignClientProperties
 feign:
   okhttp:
     enabled: true

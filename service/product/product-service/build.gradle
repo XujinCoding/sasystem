@@ -30,13 +30,9 @@ dependencies {
     //spring boot test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    //apache的Poi
-    implementation 'org.apache.poi:poi:4.1.2'
-    implementation 'org.apache.poi:poi-ooxml:4.1.2'
-
-
-    //阿里巴巴的easyExcel
-    implementation 'com.alibaba:easyexcel:3.1.1'
+    //Mybatis依赖
+    api 'mysql:mysql-connector-java'
+    api 'com.baomidou:mybatis-plus-boot-starter'
 
 }
 

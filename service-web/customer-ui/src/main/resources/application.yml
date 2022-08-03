@@ -1,0 +1,23 @@
+server:
+  port: 8094
+spring:
+  application:
+    name: customer-ui
+
+# feign : FeignClientProperties
+feign:
+  okhttp:
+    enabled: true
+  httpclient:
+    maxConnections: 200
+    maxConnectionsPerRoute: 50
+    connectionTimeout: 60000
+    connectionTimerRepeat: 70000
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 60000
+        loggerLevel: basic
+        contract: feign.jaxrs.JAXRSContract
+

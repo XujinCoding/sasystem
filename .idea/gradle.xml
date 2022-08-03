@@ -9,6 +9,7 @@
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="D:/SoftWare/gradle-7.4.1-all/gradle-7.4.1" />
+        <option name="gradleJvm" value="11 (2)" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -16,8 +17,11 @@
             <option value="$PROJECT_DIR$/platform/common" />
             <option value="$PROJECT_DIR$/service" />
             <option value="$PROJECT_DIR$/service-web" />
+            <option value="$PROJECT_DIR$/service-web/customer-ui" />
             <option value="$PROJECT_DIR$/service-web/product-ui" />
             <option value="$PROJECT_DIR$/service/customer" />
+            <option value="$PROJECT_DIR$/service/customer/customer-api" />
+            <option value="$PROJECT_DIR$/service/customer/customer-service" />
             <option value="$PROJECT_DIR$/service/product" />
             <option value="$PROJECT_DIR$/service/product/product-api" />
             <option value="$PROJECT_DIR$/service/product/product-service" />

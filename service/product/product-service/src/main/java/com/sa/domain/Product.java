@@ -1,7 +1,10 @@
 package com.sa.domain;
 
-import lombok.*;
-import lombok.experimental.Accessors;
+import com.alibaba.excel.annotation.ExcelProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -9,7 +12,6 @@ import javax.persistence.*;
 @Setter
 @ToString
 @NoArgsConstructor
-@Accessors(chain = true)
 
 @Entity
 @Table(name = "PRODUCT")
@@ -19,6 +21,7 @@ public class Product {
 //    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_PRODUCT")//设置主键自增
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "PRODUCT_ID")
+    @ExcelProperty(index = 0)
     private Long productId;
 
     @Column(name = "PRODUCT_NAME")
