@@ -5,14 +5,19 @@ import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.google.common.cache.LoadingCache;
 import com.sa.customer.dto.SystemDTO;
+import com.sa.dto.PageResult;
 import com.sa.guava.cache.GuavaCache;
 import com.sa.listener.ExcelListener;
 import com.sa.product.api.business.IProductService;
+import com.sa.product.conditon.ProductQueryCondition;
 import com.sa.product.dto.ProductDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -67,6 +72,31 @@ public class ProductUIController {
         return  new SystemDTO(200,productDTO,"");
     }
 
+
+    /**
+     * 根据所有的字段查询条件
+     * 使用这种方式传递参数的时候, 必须每一个参数都有值, 不能为null , 也不能为 "" 空串, 不符合复杂查询的需求, 弃用!!!!!!!!!!!!!!!!!!
+     * @param condition 所有的参数
+     * @return 包含商品信息的SystemDTO
+     */
+    @RequestMapping(value = "/findByParameters",method = RequestMethod.GET)
+    @ApiOperation(value = "根据所有的字段查询条件")
+    public SystemDTO findByParameters(ProductQueryCondition condition) throws ExecutionException {
+        List<ProductDTO> byParameters = productService.findByParameters(condition);
+
+        return  new SystemDTO(200,byParameters,"");
+    }
+
+
+    @RequestMapping(value = "/findByParametersUseJPA",method = RequestMethod.GET)
+    @ApiOperation(value = "使用Jpa进行查询, 并且分页")
+    public SystemDTO findByParametersUseJPA(ProductQueryCondition condition) throws ExecutionException {
+        PageResult pageResult= productService.findByParametersUseJPA(condition);
+        return  new SystemDTO(200,pageResult,"");
+    }
+
+
+
     /**
      * 读取一个excel文件, 将数据映射称DTO存到数据库中
      * @return 所有存入的DTO 的数据
@@ -96,6 +126,32 @@ public class ProductUIController {
     }
 
 
+
+
+
+
+
+
+    /**
+     * 根据所有的字段查询条件
+     * 使用这种方式传递参数的时候, 必须每一个参数都有值, 不能为null , 也不能为 "" 空串, 不符合复杂查询的需求, 弃用!!!!!!!!!!!!!!!!!!
+     * @param productDTO 所有的参数
+     * @return 包含商品信息的SystemDTO
+     */
+//    @RequestMapping(value = "/findByParameters",method = RequestMethod.GET)
+//    @ApiOperation(value = "根据所有的字段查询条件")
+//    public SystemDTO findByParameters(ProductQueryCondition productDTO) throws ExecutionException {
+//        List<ProductDTO> byParameters = productService.findByParameters(
+//                productDTO.getProductId(),
+//                productDTO.getProductName(),
+//                productDTO.getProductPrice(),
+//                productDTO.getProductNum(),
+//                productDTO.getProductRemark()
+//        );
+////        List<ProductDTO> byParameters = productService.findByParameters(productDTO);
+//
+//        return  new SystemDTO(200,byParameters,"");
+//    }
 
 
 }

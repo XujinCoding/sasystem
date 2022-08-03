@@ -11,4 +11,24 @@
     <select id="getProductById" resultType="com.sa.domain.Product">
         select * from PRODUCT where PRODUCT_ID=#{productId}
     </select>
+    <select id="findByParameters" resultType="com.sa.domain.Product">
+        select * from PRODUCT
+        <where>
+            <if test="productId!=null and productId!=''">
+                PRODUCT_ID=""
+            </if>
+            <if test="productName!=null and productName!=''">
+                and PRODUCT_NAME=#{productName}
+            </if>
+            <if test="productPrice!=null and productPrice!=''">
+                and PRODUCT_PRICE=#{productPrice}
+            </if>
+            <if test="productNum!=null and productNum!=''">
+                and PRODUCT_NUM=#{productNum}
+            </if>
+            <if test="productRemark!=null and productRemark!=''">
+                and PRODUCT_REMARK=#{productRemark}
+            </if>
+        </where>
+    </select>
 </mapper>

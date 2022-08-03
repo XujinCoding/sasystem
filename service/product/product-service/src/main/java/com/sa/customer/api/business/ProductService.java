@@ -2,18 +2,29 @@ package com.sa.customer.api.business;
 
 
 import com.sa.domain.Product;
+import com.sa.dto.PageResult;
 import com.sa.mapper.ProductRepository;
 import com.sa.mapper.mybaits.ProductMapper;
 import com.sa.product.api.business.IProductService;
+import com.sa.product.conditon.ProductQueryCondition;
 import com.sa.product.dto.ProductDTO;
 import com.sa.utils.OrikaMapperUtils;
 import io.jsonwebtoken.lang.Assert;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service("productService")
 public class ProductService implements IProductService {
@@ -109,6 +120,70 @@ public class ProductService implements IProductService {
         List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
         return listReturn;
     }
+
+    @Override
+    public List<ProductDTO> findByParameters(ProductQueryCondition condition){
+        Product product = OrikaMapperUtils.getOrikaMapperFaceCode().map(condition, Product.class);
+        List<Product> listMid = productMapper.findByParameters(product);
+        List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
+        return listReturn;
+    }
+
+    @Override
+    public PageResult findByParametersUseJPA(ProductQueryCondition condition) {
+        PageResult pageResult = new PageResult();
+        List<Product> productList;
+        Specification<Product> specification = new Specification<Product>() {//相当于一个过滤器,或者说是配置文件, 根据写的配置进行过滤
+            @Override
+            public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<>();
+                if (condition.getProductId()!=null){
+                    Predicate equalProductId = criteriaBuilder.equal(root.get("productId").as(Integer.class), condition.getProductId());
+                    list.add(equalProductId);
+                }
+                if (condition.getProductName()!=null && !condition.getProductName().equals("")){
+                    Predicate equalProductName = criteriaBuilder.equal(root.get("productName").as(String.class), condition.getProductName());
+                    list.add(equalProductName);
+                }
+                if (condition.getProductNum()!=null){
+                    Predicate equalProductNum = criteriaBuilder.equal(root.get("productNum").as(Integer.class), condition.getProductNum());
+                    list.add(equalProductNum);
+                }
+                if (condition.getProductPrice()!=null){
+                    Predicate equalProductPrice = criteriaBuilder.equal(root.get("productPrice").as(Integer.class), condition.getProductPrice());
+                    list.add(equalProductPrice);
+                }
+                if (condition.getProductRemark()!=null && !condition.getProductRemark().equals("")){
+                    Predicate equalProductRemark = criteriaBuilder.equal(root.get("productRemark").as(String.class), condition.getProductRemark());
+                    list.add(equalProductRemark);
+                }
+                Predicate[] pre = new Predicate[list.size()];
+                Predicate and = criteriaBuilder.and(list.toArray(pre));
+                return and;
+            }
+        };
+        if (Objects.isNull(condition.getPageNum()) || Objects.isNull(condition.getPageSize())){
+            productList = productRepository.findAll(specification);
+
+        }else{
+            PageRequest pageRequest = PageRequest.of(condition.getPageNum(), condition.getPageSize());
+            Page<Product> productS = productRepository.findAll(specification,pageRequest);
+            productList = productS.getContent();
+        }
+        List<ProductDTO> list = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(productList, ProductDTO.class);
+        pageResult.setPageNum(condition.getPageNum());
+        pageResult.setPageSize(condition.getPageSize());
+        pageResult.setData(list);
+
+        return pageResult;
+    }
+//    @Override
+//    public List<ProductDTO> findByParameters(Long productId,String productName,Integer productPrice,Integer productNum,String productRemark){
+//        Product product = new Product(productId,productName,productPrice,productNum,productRemark);
+//        List<Product> listMid = productMapper.findByParameters(product);
+//        List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
+//        return listReturn;
+//    }
 
 
 }
