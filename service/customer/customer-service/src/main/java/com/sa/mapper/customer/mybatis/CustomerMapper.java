@@ -1,6 +1,7 @@
 package com.sa.mapper.customer.mybatis;
 
 import com.sa.customer.dto.ProductInstanceDTO;
+import com.sa.dto.job.BatchTaskDTO;
 import com.sa.domain.Customer;
 import com.sa.domain.ProductInstance;
 import org.apache.ibatis.annotations.Param;
@@ -25,4 +26,8 @@ public interface CustomerMapper {
      * @return 商品ID 列表
      */
     List<ProductInstanceDTO> getProductListByProduct(Long customerId);
+
+    List<BatchTaskDTO> getTaskByStatus(@Param("status") Integer status);
+
+    Customer findByAgeAndName(Customer customer);
 }

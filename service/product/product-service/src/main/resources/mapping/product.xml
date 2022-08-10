@@ -4,6 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sa.mapper.mybaits.ProductMapper">
 
+
+
+
+
+    <update id="changeTaskState">
+        update BATCH_TASK_ITEM set STATE=#{status,jdbcType=NUMERIC},msg=#{msg,jdbcType=VARCHAR} where ID=#{id,jdbcType=NUMERIC}
+    </update>
+    <update id="setSuccessNumber">
+        UPDATE BATCH_TASK SET SUCCESS_NUM=#{successNum} where TASK_ID=#{taskId}
+    </update>
+
     <select id="getAll" resultType="com.sa.domain.Product">
         SELECT * FROM PRODUCT
 
@@ -15,7 +26,7 @@
         select * from PRODUCT
         <where>
             <if test="productId!=null and productId!=''">
-                PRODUCT_ID=""
+                PRODUCT_ID=#{productId}
             </if>
             <if test="productName!=null and productName!=''">
                 and PRODUCT_NAME=#{productName}
@@ -30,5 +41,89 @@
                 and PRODUCT_REMARK=#{productRemark}
             </if>
         </where>
+    <if test="pageNum!=null and pageSize!=null">
+        limit pageNum,pageSize
+    </if>
+
     </select>
+    <select id="getProductNonTask" resultType="com.sa.domain.BatchTask">
+        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE=0 and MODEL = 0
+    </select>
+    <select id="getProductTaskIng" resultType="com.sa.domain.BatchTask">
+        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE = 2 and MODEL = 0
+    </select>
+
+    <select id="getTaskOperate" resultType="com.sa.dto.job.Operate">
+        select OPERATE from BATCH_TASK where TASK_ID=#{taskId,jdbcType=NUMERIC}
+    </select>
+    <select id="getProductDistinct" resultType="com.sa.domain.Product">
+        select * from PRODUCT where PRODUCT_NAME=#{productName,jdbcType=VARCHAR} and PRODUCT_PRICE=#{productPrice,jdbcType=NUMERIC}
+    </select>
+
+
+
+
+
+
+
+
+    <update id="setFailNumber">
+        UPDATE BATCH_TASK SET FAIL_NUM=#{failNum} where TASK_ID=#{taskId}
+    </update>
+    <select id="getFailNumber" resultType="java.lang.Integer">
+        select COUNT(*) from BATCH_TASK_ITEM where TASK_ID=#{taskId,jdbcType=NUMERIC} and STATE=-1
+    </select>
+    <select id="getTotalNumber" resultType="java.lang.Integer">
+        select  TOTAL from  BATCH_TASK where TASK_ID=#{taskId,jdbcType=NUMERIC}
+    </select>
+    <select id="getSuccessNumber" resultType="java.lang.Integer">
+        select COUNT(*) from BATCH_TASK_ITEM where TASK_ID=#{taskId,jdbcType=NUMERIC} and STATE=1
+    </select>
+
+    <select id="getNotRunningTask" resultType="com.sa.domain.BatchTask">
+        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE=0
+    </select>
+    <select id="getRunningTask" resultType="com.sa.domain.BatchTask">
+        select TASK_ID,DATA
+        from BATCH_TASK
+        where STATE=2
+    </select>
+    <select id="getAllTasking" resultType="com.sa.domain.BatchTaskItem">
+        select * from BATCH_TASK_ITEM where STATE=0
+    </select>
+
+    <update id="changeTaskTableState">
+        update BATCH_TASK set STATE = #{state,jdbcType=NUMERIC} where TASK_ID=#{taskId,jdbcType=NUMERIC}
+    </update>
+    <update id="setTaskTotal">
+        update BATCH_TASK set TOTAL=#{size,jdbcType=NUMERIC} where TASK_ID=#{taskId,jdbcType=NUMERIC}
+    </update>
+    <update id="setTaskStatus">
+        update BATCH_TASK set STATE=#{status,jdbcType=NUMERIC} where TASK_ID=#{taskId}
+    </update>
+    <update id="setItemStatus">
+        update BATCH_TASK_ITEM set STATE = #{status,jdbcType=NUMERIC},MSG = #{msg,jdbcType=VARCHAR} where TASK_ID = #{taskId,jdbcType=NUMERIC};
+    </update>
+    <insert id="addItem">
+        insert into BATCH_TASK_ITEM
+        (id, task_id, product_name, product_price, product_num, product_remark, state, msg)
+        values
+            (null,#{taskId,jdbcType=NUMERIC},
+             #{productName,jdbcType=VARCHAR},
+             #{productPrice,jdbcType=NUMERIC},
+             #{productNum,jdbcType=NUMERIC},
+             #{productRemark,jdbcType=VARCHAR},
+             #{state,jdbcType=NUMERIC},
+             #{msg,jdbcType=VARCHAR}
+            )
+    </insert>
+    <insert id="submitTask">
+        insert into BATCH_TASK (TASK_ID, OPERATE, DATA, STATE)
+        values(null,
+               #{operate,jdbcType=VARCHAR},
+               #{data,jdbcType=VARCHAR},
+               #{state,jdbcType=NUMERIC}
+              )
+    </insert>
+
 </mapper>

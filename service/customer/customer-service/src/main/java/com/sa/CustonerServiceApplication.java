@@ -1,6 +1,7 @@
 package com.sa;
 
 import com.sa.config.JerseyServiceAutoScanner;
+import com.sa.converter.EnumParamConverter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +22,12 @@ public class CustonerServiceApplication {
     @Bean
     public ResourceConfig jerseyConfig(ApplicationContext applicationContext){
         ResourceConfig resourceConfig = new ResourceConfig();
+        //注册jesery注解扫描器
         resourceConfig.registerClasses(JerseyServiceAutoScanner.getPublishJerseyServiceClasses(applicationContext,"com.sa.customer.api.business"));
+        /**
+         * 用于进行枚举参数在传递的时候,使用@EnumFormat注解进行标记之后转换
+         */
+        resourceConfig.register(EnumParamConverter.class);
         return resourceConfig;
     }
 }

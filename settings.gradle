@@ -18,4 +18,6 @@ include 'service:customer:customer-api'
 findProject(':service:customer:customer-api')?.name = 'customer-api'
 include 'service:customer:customer-service'
 findProject(':service:customer:customer-service')?.name = 'customer-service'
+include 'service:job'
+findProject(':service:job')?.name = 'job'
 

@@ -19,7 +19,7 @@ public class ProductDTO {
     private Integer productNum;
     private String productRemark;
 
-    public ProductDTO(Long productId, String productName, Integer productPrice, Integer productNum, String productRemark) {
+    public ProductDTO(String productName, Integer productPrice, Integer productNum, String productRemark) {
         this.productId = productId;
         this.productName = productName;
         this.productPrice = productPrice;

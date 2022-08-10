@@ -10,7 +10,7 @@ ext {
 
     dependencies = [
             "fastjson"                      : "com.alibaba:fastjson:${version.fastjsonVersion}",
-            "mybatis-plus-boot-starter"     : "com.baomidou:mybatis-plus-boot-starter:${version.mybatisPlus}",
+            "mybatis-plus-boot-starter"     : "com.baomidou:mybatis-plus-boot-starter:3.5.1",
             "mysql"                         : "mysql:mysql-connector-java:${version.mysql}",
             "swagger"                       : "io.springfox:springfox-swagger2:${version.swaggerVersion}",
             "swaggerUI"                     : "io.springfox:springfox-swagger-ui:${version.swaggerVersion}",

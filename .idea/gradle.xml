@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/service/customer" />
             <option value="$PROJECT_DIR$/service/customer/customer-api" />
             <option value="$PROJECT_DIR$/service/customer/customer-service" />
+            <option value="$PROJECT_DIR$/service/job" />
             <option value="$PROJECT_DIR$/service/product" />
             <option value="$PROJECT_DIR$/service/product/product-api" />
             <option value="$PROJECT_DIR$/service/product/product-service" />

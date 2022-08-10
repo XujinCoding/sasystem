@@ -4,17 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sa.mapper.customer.mybatis.CustomerMapper">
     <insert id="buyProduct">
-        insert into OFFER_PRODUCT_CUSTOMER(CUSTOMER_ID,PRODUCT_ID,CREATE_TIME) values (#{customerId,jdbcType=NUMERIC},#{productId,jdbcType=NUMERIC},#{createTime,jdbcType=DATE})
+        insert into PRODUCT_CUSTOMER_REL(CUSTOMER_ID,PRODUCT_ID,CREATE_TIME) values (#{customerId,jdbcType=NUMERIC},#{productId,jdbcType=NUMERIC},#{createTime,jdbcType=DATE})
     </insert>
     <select id="findById" resultType="com.sa.domain.Customer">
         select * from CUSTOMER where CUSTOMER_ID= #{customerId,jdbcType=NUMERIC}
     </select>
     <select id="findOfferByCustomerId" resultType="com.sa.customer.dto.ProductInstanceDTO">
         select CUSTOMER_ID,OPC.PRODUCT_ID,PRODUCT_NAME,PRODUCT_PRICE,PRODUCT_NUM,PRODUCT_REMARK,CREATE_TIME
-        FROM PRODUCT JOIN OFFER_PRODUCT_CUSTOMER OPC on PRODUCT.PRODUCT_ID = OPC.PRODUCT_ID
+        FROM PRODUCT JOIN PRODUCT_CUSTOMER_REL OPC on PRODUCT.PRODUCT_ID = OPC.PRODUCT_ID
         WHERE CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
     </select>
     <select id="getProductListByProduct" resultType="com.sa.customer.dto.ProductInstanceDTO">
-        select PRODUCT_ID,CUSTOMER_ID,CREATE_TIME from OFFER_PRODUCT_CUSTOMER where CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
+        select PRODUCT_ID,CUSTOMER_ID,CREATE_TIME from PRODUCT_CUSTOMER_REL where CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
+    </select>
+    <select id="getTaskByStatus" resultType="com.sa.dto.job.BatchTaskDTO">
+        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE = #{status,jdbcType=NUMERIC}
+    </select>
+    <select id="findByAgeAndName" resultType="com.sa.domain.Customer">
+        select * from CUSTOMER where CUSTOMER_NAME=#{customerName,jdbcType=VARCHAR} and CUSTOMER_AGE=#{customerAge,jdbcType=NUMERIC}
     </select>
 </mapper>

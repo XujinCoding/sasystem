@@ -34,6 +34,12 @@ dependencies {
     api 'mysql:mysql-connector-java'
     api 'com.baomidou:mybatis-plus-boot-starter'
 
+    //Jackson 依赖引入
+//    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+
+    //flyway 依赖引入
+//    implementation 'org.flywaydb:flyway-core:9.0.4'
+
 }
 
 test {

@@ -25,12 +25,22 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.12'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
     testCompileOnly 'org.projectlombok:lombok:1.18.2'
+
+    //JPA 的依赖引入
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.6'
+
+
     //spring boot test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     //Mybatis依赖
     api 'mysql:mysql-connector-java'
     api 'com.baomidou:mybatis-plus-boot-starter'
+
+
+    //flyway 依赖引入
+//    implementation 'org.flywaydb:flyway-core:9.0.4'
+
 }
 
 test {

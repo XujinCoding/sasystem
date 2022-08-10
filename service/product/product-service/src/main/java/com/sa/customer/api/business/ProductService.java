@@ -3,6 +3,7 @@ package com.sa.customer.api.business;
 
 import com.sa.domain.Product;
 import com.sa.dto.PageResult;
+import com.sa.dto.job.BatchTaskDTO;
 import com.sa.mapper.ProductRepository;
 import com.sa.mapper.mybaits.ProductMapper;
 import com.sa.product.api.business.IProductService;
@@ -37,9 +38,14 @@ public class ProductService implements IProductService {
     public List<ProductDTO> getAll() {
         //使用MyBatis进行查询
         List<Product> all = productMapper.getAll();
+        try {
+            Thread.sleep(100000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
 
-          //----------对象关系映射------------
+        //----------对象关系映射------------
 //        //将product 映射到productDTO中
 //        //普通方法
 //        List<ProductDTO> result = new ArrayList<>();
@@ -122,11 +128,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductDTO> findByParameters(ProductQueryCondition condition){
-        Product product = OrikaMapperUtils.getOrikaMapperFaceCode().map(condition, Product.class);
-        List<Product> listMid = productMapper.findByParameters(product);
+    public PageResult findByParameters(ProductQueryCondition condition){
+        PageResult pageResult = new PageResult();
+        List<Product> listMid = productMapper.findByParameters(condition);
         List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
-        return listReturn;
+        pageResult.setPageNum(condition.getPageNum());
+        pageResult.setPageSize(condition.getPageSize());
+        pageResult.setData(listReturn);
+        return pageResult;
     }
 
     @Override
@@ -177,6 +186,20 @@ public class ProductService implements IProductService {
 
         return pageResult;
     }
+
+    /**
+     * 前端提交任务之后将任务入库
+     * @param batchTasksDTO 定时任务的DTO
+     * @return
+     */
+
+    @Override
+    public boolean submitTask(BatchTaskDTO batchTaskDTO) {
+        productMapper.submitTask(batchTaskDTO);
+        return true;
+    }
+
+
 //    @Override
 //    public List<ProductDTO> findByParameters(Long productId,String productName,Integer productPrice,Integer productNum,String productRemark){
 //        Product product = new Product(productId,productName,productPrice,productNum,productRemark);

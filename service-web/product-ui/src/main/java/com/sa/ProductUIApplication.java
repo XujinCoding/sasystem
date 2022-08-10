@@ -9,10 +9,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication(scanBasePackages = "com.sa")
 //TODO ---------
 @EnableFeignClients({"com.sa.product.api.business"})
+//开启全局的Scheduling扫描机制
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = false,exposeProxy = true)
 public class ProductUIApplication {
     public static void main(String[] args) {
         SpringApplication.run(ProductUIApplication.class,args);
     }
+
 }
+
+

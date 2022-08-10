@@ -6,6 +6,7 @@ import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.google.common.cache.LoadingCache;
 import com.sa.customer.dto.SystemDTO;
 import com.sa.dto.PageResult;
+import com.sa.dto.job.BatchTaskDTO;
 import com.sa.guava.cache.GuavaCache;
 import com.sa.listener.ExcelListener;
 import com.sa.product.api.business.IProductService;
@@ -14,10 +15,7 @@ import com.sa.product.dto.ProductDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -82,7 +80,7 @@ public class ProductUIController {
     @RequestMapping(value = "/findByParameters",method = RequestMethod.GET)
     @ApiOperation(value = "根据所有的字段查询条件")
     public SystemDTO findByParameters(ProductQueryCondition condition) throws ExecutionException {
-        List<ProductDTO> byParameters = productService.findByParameters(condition);
+        PageResult byParameters = productService.findByParameters(condition);
 
         return  new SystemDTO(200,byParameters,"");
     }
@@ -117,7 +115,6 @@ public class ProductUIController {
         if (list.size()==0){
             return new SystemDTO(200,null,"excel中没有数据或数据解析失败");
         }
-        //TODO : 多线程并发访问数据库????????
 
         //将List 中的数据存储到数据库中
         List<ProductDTO> productDTOS = productService.saveAll(list);
@@ -126,10 +123,13 @@ public class ProductUIController {
     }
 
 
-
-
-
-
+    @RequestMapping(value = "/submitTask",method = RequestMethod.POST)
+    @ApiOperation(value = "提交一个定时批量任务 不需要传递ID 和 state 由后台自动生成")
+    public SystemDTO submitTask(@RequestBody BatchTaskDTO batchTaskDTO){
+        batchTaskDTO.setState(0);
+        System.out.println(batchTaskDTO);
+        return new SystemDTO(200,productService.submitTask(batchTaskDTO),"");
+    }
 
 
     /**

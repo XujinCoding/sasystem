@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor
-public class CustomerMappingProduct {
+public class ProductCustomerRel {
     private Long customerId;
     private List<Long> productId;
 }

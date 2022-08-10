@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.sa.customer.api.business.ICustomerService;
 import com.sa.customer.dto.ProductInstanceDTO;
+import com.sa.dto.job.BatchTaskDTO;
 import com.sa.product.api.business.IProductService;
 import com.sa.product.dto.ProductDTO;
 import io.swagger.annotations.Api;
@@ -121,5 +122,14 @@ public class CustomerController {
 
         //查看商品是否存在
 
+    }
+
+
+
+    @ResponseBody
+    @ApiOperation(value = "异步批量添加客户")
+    @RequestMapping(value = "/asynchronouslyAddCustomer", method = RequestMethod.POST,produces = "application/json")
+    public BatchTaskDTO asynchronouslyAddCustomer(@RequestBody BatchTaskDTO batchTaskDTO) {
+        return customerService.createAsynchronouslyTask(batchTaskDTO);
     }
 }

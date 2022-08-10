@@ -2,9 +2,13 @@ package com.sa.customer.api.business;
 
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
+import com.sa.dto.job.BatchTaskDTO;
+import com.sa.domain.BatchTask;
 import com.sa.domain.Customer;
 import com.sa.domain.ProductInstance;
+import com.sa.mapper.customer.jpa.BatchTaskRepository;
 import com.sa.mapper.customer.mybatis.CustomerMapper;
+import com.sa.utils.OrikaMapperUtils;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +17,15 @@ import org.springframework.stereotype.Service;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Service("CustomerService")
+@Service
 public class CustomerService implements ICustomerService {
 
     @Autowired
     private CustomerMapper customerMapper;
+
+    @Autowired
+    private BatchTaskRepository batchTaskRepository;
+
 
     /**
      * 根据CustomerId查询CustomerDTO
@@ -66,5 +74,21 @@ public class CustomerService implements ICustomerService {
     @Override
     public List<ProductInstanceDTO> getProductListByProduct(Long customerId) {
         return customerMapper.getProductListByProduct(customerId);
+    }
+
+    @Override
+    public List<BatchTaskDTO> getTaskByStatus(Integer status) {
+        return customerMapper.getTaskByStatus(status);
+
+    }
+
+    @Override
+    public BatchTaskDTO createAsynchronouslyTask(BatchTaskDTO batchTaskDTO) {
+        batchTaskDTO.setState(0);
+        batchTaskDTO.setTaskId(-1L);
+        BatchTask map = OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTaskDTO, BatchTask.class);
+        BatchTask batchTask = batchTaskRepository.save(map);
+
+        return OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTask, BatchTaskDTO.class);
     }
 }

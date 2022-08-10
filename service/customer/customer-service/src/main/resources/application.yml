@@ -14,10 +14,15 @@ spring:
     maxActive: 20 # 最大活动连接数
     minIdle: 1 # 最小空闲数量
     maxWait: 6000 # 最大等待时间
+  jpa:
+    #配置在日志中打印出执行的 SQL 语句信息。
+    show-sql: true
 mybatis-plus:
   mapper-locations: classpath:mapping/*.xml
   configuration:
     map-underscore-to-camel-case: true # 开启驼峰映射
+  type-enums-package: com.sa.customer.dto.job
+  type-handlers-package: com.sa.handle
 
 logging:
   level:
