@@ -1,6 +1,7 @@
 package com.sa.domain;
 
 
+import com.sa.dto.job.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,11 +27,9 @@ public class BatchTaskItem {
     @Column(name = "TASK_ID")
     private Long taskId;
 
-//    @Column(name = "OPERATE")
-//    private Operate operate;
-
     @Column(name = "STATE")
-    private Integer state;
+    private Status state;
+
     @Column(name = "MSG")
     private String msg;
 
@@ -42,6 +41,18 @@ public class BatchTaskItem {
 
     @Column(name = "CUSTOMER_HOME")
     private String customerHome;
+
+    @Column(name = "PRODUCT_NAME")
+    private String productName;
+
+    @Column(name = "PRODUCT_PRICE")
+    private Integer productPrice;
+
+    @Column(name = "PRODUCT_NUM")
+    private Integer productNum;
+
+    @Column(name = "PRODUCT_REMARK")
+    private String productRemark;
 
 
     @Override

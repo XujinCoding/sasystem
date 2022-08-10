@@ -1,6 +1,7 @@
 package com.sa.customer.api.business.job;
 
-import com.sa.dto.job.Operate;
+import com.sa.dto.job.Status;
+import com.sa.dto.job.Type;
 import com.sa.domain.BatchTaskItem;
 import com.sa.domain.Customer;
 import com.sa.mapper.customer.jpa.BatchTaskItemRepository;
@@ -36,20 +37,20 @@ public class BatchAcceptCustomerExecuteJob {
 
     @Scheduled(fixedDelay = 10000)
     public void executeTaskItem(){
-        List<BatchTaskItem> taskItems = batchTaskItemRepository.findBatchTaskItemsByState(0);
+        List<BatchTaskItem> taskItems = batchTaskItemRepository.findBatchTaskItemsByState(Status.PREPARING);
         taskItems.forEach(item->{
-            Integer operateNum = batchTaskRepository.findOperateByTaskId(item.getTaskId());
-            if (operateNum == Operate.BATCH_ADD_CUSTOMER.ordinal()){
+            Integer operateNum = batchTaskRepository.findTypeByTaskId(item.getTaskId());
+            if (operateNum == Type.BATCH_ADD_CUSTOMER.ordinal()){
                 try {
                     //将信息插入到Customer表中
                     addItemIntoCustomer(item);
 
                     //修改信息
-                    batchTaskItemRepository.setStatusAndMsgById(item.getId(),1,"");
+                    batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(),"");
 
                 } catch (Exception e) {
                     String message = e.getMessage();
-                    batchTaskItemRepository.setStatusAndMsgById(item.getId(),-1,message);
+                    batchTaskItemRepository.setStatusAndMsgById(item.getId(),Status.FAILURE.ordinal(),message);
 
                 }
             }

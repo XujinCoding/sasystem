@@ -12,16 +12,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+//@Accessors(chain = true)
 public class BatchTaskDTO {
     private Long taskId;
-    private Operate operate;
+    private Type type;
     private String data;
-    private Integer state;
+    private Status state;
 
-    public BatchTaskDTO(Long taskId, Operate operate, String data, Integer state) {
-        this.taskId = taskId;
-        this.operate = operate;
-        this.data = data;
-        this.state = state;
-    }
 }

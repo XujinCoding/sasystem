@@ -189,7 +189,7 @@ public class ProductService implements IProductService {
 
     /**
      * 前端提交任务之后将任务入库
-     * @param batchTasksDTO 定时任务的DTO
+     * @param batchTaskDTO 定时任务的DTO
      * @return
      */
 

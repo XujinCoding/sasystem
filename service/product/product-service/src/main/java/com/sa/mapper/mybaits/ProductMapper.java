@@ -4,7 +4,8 @@ import com.sa.domain.BatchTask;
 import com.sa.domain.BatchTaskItem;
 import com.sa.domain.Product;
 import com.sa.dto.job.BatchTaskDTO;
-import com.sa.dto.job.Operate;
+import com.sa.dto.job.Status;
+import com.sa.dto.job.Type;
 import com.sa.product.conditon.ProductQueryCondition;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,7 +22,7 @@ public interface ProductMapper {
 
     boolean submitTask(BatchTaskDTO batchTaskDTO);
 
-    void changeTaskTableState(@Param("taskId") Long taskId, @Param("state") int state);
+    void changeTaskTableState(@Param("taskId") Long taskId, @Param("state") Status state);
 
     Integer getSuccessNumber(@Param("taskId") Long taskId);
 
@@ -29,11 +30,11 @@ public interface ProductMapper {
 
     Integer getTotalNumber(@Param("taskId") Long taskId);
 
-    void setTaskStatus(@Param("taskId") Long taskId, @Param("status") Integer status);
+    void setTaskStatus(@Param("taskId") Long taskId, @Param("status") Status status);
 
-    Operate getTaskOperate(@Param("taskId") Long taskId);
+    Type getTaskType(@Param("taskId") Long taskId);
 
-    void changeTaskState(@Param("id") Long id, @Param("status") int status, @Param("msg") String msg);
+    void changeTaskState(@Param("id") Long id, @Param("status") Status status, @Param("msg") String msg);
 
     void setSuccessNumber(@Param("successNum") Integer successNum, @Param("taskId") Long taskId);
 

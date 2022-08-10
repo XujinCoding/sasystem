@@ -2,7 +2,8 @@ package com.sa.customer.api.business.job;
 
 import com.sa.domain.BatchTask;
 import com.sa.domain.BatchTaskItem;
-import com.sa.dto.job.Operate;
+import com.sa.dto.job.Status;
+import com.sa.dto.job.Type;
 import com.sa.mapper.mybaits.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class BatchAcceptTaskProductJob {
         //这一步只去进行拆分操作, 并且将数据插入到明细表中
 
         tasksListNon.forEach((task)->{
-            if (task.getOperate() == Operate.BATCH_ADD_PRODUCT)
+            if (task.getType() == Type.BATCH_ADD_PRODUCT)
                 parseBatchAddProductTask(task);
         });
     }
@@ -63,7 +64,7 @@ public class BatchAcceptTaskProductJob {
         productMapper.setTaskTotal(task.getTaskId() ,size);
 
         //将当前的任务在任务列表中设置成进行中
-        productMapper.changeTaskTableState(task.getTaskId(),2);
+        productMapper.changeTaskTableState(task.getTaskId(), Status.RUNNING);
 
     }
 
@@ -80,7 +81,7 @@ public class BatchAcceptTaskProductJob {
             Integer totalNum = productMapper.getTotalNumber(taskId);
             if (successNum + failNum >= totalNum) {
                 //任务执行成功, 将任务状态设置成完成
-                productMapper.setTaskStatus(taskId, 1);
+                productMapper.setTaskStatus(taskId, Status.SUCCESS);
             }
         });
     }
@@ -92,7 +93,7 @@ public class BatchAcceptTaskProductJob {
     public Integer parseString(BatchTask batchTask){
         String data = batchTask.getData();
         if(StringUtils.isEmpty(data)){
-            productMapper.setTaskStatus(batchTask.getTaskId(), 1);
+            productMapper.setTaskStatus(batchTask.getTaskId(), Status.SUCCESS);
         }
         int i = 0;
         String[] split = data.split(" ");
@@ -113,7 +114,7 @@ public class BatchAcceptTaskProductJob {
                 BatchTaskItem batchTaskItem = new BatchTaskItem();
                 batchTaskItem.setTaskId(batchTask.getTaskId());
                 batchTaskItem.setMsg("数据解析出错:" + batchTask.getData());
-                batchTaskItem.setState(-1);
+                batchTaskItem.setState(Status.FAILURE);
                 productMapper.addItem(batchTaskItem);
                 continue;
             }
@@ -123,7 +124,7 @@ public class BatchAcceptTaskProductJob {
             batchTaskItem.setProductNum(Integer.parseInt(split1[1]));
             batchTaskItem.setProductPrice(Integer.parseInt(split1[2]));
             batchTaskItem.setProductRemark(split1[3]);
-            batchTaskItem.setState(0);
+            batchTaskItem.setState(Status.PREPARING);
             batchTaskItem.setMsg("");
             productMapper.addItem(batchTaskItem);
         }

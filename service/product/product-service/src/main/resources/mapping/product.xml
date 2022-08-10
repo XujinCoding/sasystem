@@ -47,14 +47,14 @@
 
     </select>
     <select id="getProductNonTask" resultType="com.sa.domain.BatchTask">
-        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE=0 and MODEL = 0
+        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE=0 and MODEL = 0
     </select>
     <select id="getProductTaskIng" resultType="com.sa.domain.BatchTask">
-        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE = 2 and MODEL = 0
+        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE = 2 and MODEL = 0
     </select>
 
-    <select id="getTaskOperate" resultType="com.sa.dto.job.Operate">
-        select OPERATE from BATCH_TASK where TASK_ID=#{taskId,jdbcType=NUMERIC}
+    <select id="getTaskType" resultType="com.sa.dto.job.Type">
+        select TYPE from BATCH_TASK where TASK_ID=#{taskId,jdbcType=NUMERIC}
     </select>
     <select id="getProductDistinct" resultType="com.sa.domain.Product">
         select * from PRODUCT where PRODUCT_NAME=#{productName,jdbcType=VARCHAR} and PRODUCT_PRICE=#{productPrice,jdbcType=NUMERIC}
@@ -71,7 +71,7 @@
         UPDATE BATCH_TASK SET FAIL_NUM=#{failNum} where TASK_ID=#{taskId}
     </update>
     <select id="getFailNumber" resultType="java.lang.Integer">
-        select COUNT(*) from BATCH_TASK_ITEM where TASK_ID=#{taskId,jdbcType=NUMERIC} and STATE=-1
+        select COUNT(*) from BATCH_TASK_ITEM where TASK_ID=#{taskId,jdbcType=NUMERIC} and STATE=3
     </select>
     <select id="getTotalNumber" resultType="java.lang.Integer">
         select  TOTAL from  BATCH_TASK where TASK_ID=#{taskId,jdbcType=NUMERIC}
@@ -81,7 +81,7 @@
     </select>
 
     <select id="getNotRunningTask" resultType="com.sa.domain.BatchTask">
-        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE=0
+        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE=0
     </select>
     <select id="getRunningTask" resultType="com.sa.domain.BatchTask">
         select TASK_ID,DATA
@@ -118,9 +118,9 @@
             )
     </insert>
     <insert id="submitTask">
-        insert into BATCH_TASK (TASK_ID, OPERATE, DATA, STATE)
+        insert into BATCH_TASK (TASK_ID, TYPE, DATA, STATE)
         values(null,
-               #{operate,jdbcType=VARCHAR},
+               #{type,jdbcType=NUMERIC},
                #{data,jdbcType=VARCHAR},
                #{state,jdbcType=NUMERIC}
               )

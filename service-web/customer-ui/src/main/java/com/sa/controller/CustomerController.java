@@ -130,6 +130,12 @@ public class CustomerController {
     @ApiOperation(value = "异步批量添加客户")
     @RequestMapping(value = "/asynchronouslyAddCustomer", method = RequestMethod.POST,produces = "application/json")
     public BatchTaskDTO asynchronouslyAddCustomer(@RequestBody BatchTaskDTO batchTaskDTO) {
+        /**
+         * {
+         *     "operate":"0",
+         *     "data":"顾客1,123,2 顾客2,3,2"
+         * }
+         */
         return customerService.createAsynchronouslyTask(batchTaskDTO);
     }
 }

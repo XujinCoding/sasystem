@@ -14,7 +14,7 @@ public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaS
     @Modifying
     @Transactional
     @Query(value = "UPDATE BATCH_TASK set STATE=:status where TASK_ID=:taskId",nativeQuery = true)
-    void changeTaskStatus(@Param("taskId")Long taskId, @Param("status") int status);
+    void changeTaskStatus(@Param("taskId")Long taskId, @Param("status") Integer status);
 
 
     @Modifying
@@ -40,6 +40,6 @@ public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaS
     @Query(value = "select TOTAL FROM BATCH_TASK WHERE TASK_ID=:taskId",nativeQuery = true)
     Integer findTotalByTaskId(@Param("taskId") Long taskId);
 
-    @Query(value = "select OPERATE FROM BATCH_TASK WHERE TASK_ID=:taskId",nativeQuery = true)
-    Integer findOperateByTaskId(@Param("taskId") Long taskId);
+    @Query(value = "select TYPE FROM BATCH_TASK WHERE TASK_ID=:taskId",nativeQuery = true)
+    Integer findTypeByTaskId(@Param("taskId") Long taskId);
 }

@@ -3,6 +3,7 @@ package com.sa.customer.api.business;
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
 import com.sa.dto.job.BatchTaskDTO;
+import com.sa.dto.job.Status;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -43,5 +44,5 @@ public interface ICustomerService {
     BatchTaskDTO createAsynchronouslyTask(@RequestBody BatchTaskDTO batchTaskDTO);
     @POST
     @Path("/getAllTaskByCustomerModel")
-    List<BatchTaskDTO> getTaskByStatus(Integer status);
+    List<BatchTaskDTO> getTaskByStatus(Status status);
 }

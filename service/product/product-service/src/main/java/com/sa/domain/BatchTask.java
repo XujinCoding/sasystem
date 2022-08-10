@@ -1,6 +1,6 @@
 package com.sa.domain;
 
-import com.sa.dto.job.Operate;
+import com.sa.dto.job.Type;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,17 +26,17 @@ public class BatchTask {
 
     @Column(name = "TASK_ID")
     private Long taskId;
-    @Column(name = "OPERATE")
-    private Operate operate;
+    @Column(name = "TYPE")
+    private Type type;
     @Column(name = "DATA")
     private String data;
     @Column(name = "STATE")
     private Integer state;
 
 
-    public BatchTask(Long taskId, Operate operate, String data, Integer state) {
+    public BatchTask(Long taskId, Type type, String data, Integer state) {
         this.taskId = taskId;
-        this.operate = operate;
+        this.type = type;
         this.data = data;
         this.state = state;
     }

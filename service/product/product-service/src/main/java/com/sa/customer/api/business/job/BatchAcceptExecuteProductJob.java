@@ -2,7 +2,8 @@ package com.sa.customer.api.business.job;
 
 import com.sa.domain.BatchTaskItem;
 import com.sa.domain.Product;
-import com.sa.dto.job.Operate;
+import com.sa.dto.job.Status;
+import com.sa.dto.job.Type;
 import com.sa.mapper.ProductRepository;
 import com.sa.mapper.mybaits.ProductMapper;
 import com.sa.product.dto.ProductDTO;
@@ -32,23 +33,23 @@ public class BatchAcceptExecuteProductJob {
         List<BatchTaskItem> taskingList = productMapper.getAllTasking();
         taskingList.forEach((task -> {
             //查看任务的操作类型
-            Operate type = productMapper.getTaskOperate(task.getTaskId());
+            Type type = productMapper.getTaskType(task.getTaskId());
 
             //根据不同的操作类型,进行不同的逻辑
             try {
-                if (type == Operate.BATCH_ADD_PRODUCT){
+                if (type == Type.BATCH_ADD_PRODUCT){
                     //处理任务, 根据任务的类型判断处理逻辑
                     addProductService(task);
 
                     //根据这个拆分任务ID 修改这个拆分任务的状态
-                    productMapper.changeTaskState(task.getId(),1,"");
+                    productMapper.changeTaskState(task.getId(), Status.SUCCESS,"");
                 }
             }catch(Exception e){
                 //捕捉所有错误,并打印出来
                 e.printStackTrace();
                 log.error("-------------执行任务出错");
                 //报错就讲将这个状态设置为处理失败,报错信息添加进去
-                productMapper.changeTaskState(task.getId(),-1,e.getMessage());
+                productMapper.changeTaskState(task.getId(),Status.FAILURE,e.getMessage());
             }
 
 

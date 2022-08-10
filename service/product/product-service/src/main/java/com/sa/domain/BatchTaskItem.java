@@ -1,6 +1,7 @@
 package com.sa.domain;
 
 
+import com.sa.dto.job.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public class BatchTaskItem {
     private Long taskId;
 
     @Column(name = "STATE")
-    private Integer state;
+    private Status state;
 
     @Column(name = "MSG")
     private String msg;

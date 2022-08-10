@@ -18,7 +18,7 @@
         select PRODUCT_ID,CUSTOMER_ID,CREATE_TIME from PRODUCT_CUSTOMER_REL where CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
     </select>
     <select id="getTaskByStatus" resultType="com.sa.dto.job.BatchTaskDTO">
-        select TASK_ID,OPERATE,DATA from BATCH_TASK where STATE = #{status,jdbcType=NUMERIC}
+        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE = #{status,jdbcType=NUMERIC}
     </select>
     <select id="findByAgeAndName" resultType="com.sa.domain.Customer">
         select * from CUSTOMER where CUSTOMER_NAME=#{customerName,jdbcType=VARCHAR} and CUSTOMER_AGE=#{customerAge,jdbcType=NUMERIC}

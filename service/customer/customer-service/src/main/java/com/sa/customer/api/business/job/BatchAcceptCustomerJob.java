@@ -2,7 +2,8 @@ package com.sa.customer.api.business.job;
 
 import com.sa.customer.api.business.ICustomerService;
 import com.sa.dto.job.BatchTaskDTO;
-import com.sa.dto.job.Operate;
+import com.sa.dto.job.Status;
+import com.sa.dto.job.Type;
 import com.sa.domain.BatchTaskItem;
 import com.sa.domain.Customer;
 import com.sa.mapper.customer.jpa.BatchTaskItemRepository;
@@ -48,16 +49,16 @@ public class BatchAcceptCustomerJob {
 
     private void updateTaskStatusAndNums() {
         //查询所有的正在处理中的任务
-        List<BatchTaskDTO> taskList = customerService.getTaskByStatus(2);
+        List<BatchTaskDTO> taskList = customerService.getTaskByStatus(Status.RUNNING);
         taskList.forEach( task ->{
             Long taskId = task.getTaskId();
-            Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(1, taskId);
-            Integer fail = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(-1, taskId);
+            Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.SUCCESS, taskId);
+            Integer fail = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.FAILURE, taskId);
             batchTaskRepository.setSuccessAndFailNum(taskId,success,fail);
             Integer total = batchTaskRepository.findTotalByTaskId(taskId);
             //如果成功数 + 失败数 = 总数 ,代表所有数据处理成功, 将任务设置为已完成
             if (success+fail>= total){
-                batchTaskRepository.changeTaskStatus(taskId,1);
+                batchTaskRepository.changeTaskStatus(taskId,Status.SUCCESS.ordinal());
                 //将当前任务的data设置为null
                 batchTaskRepository.setDataOkByTaskId(taskId);
             }
@@ -66,15 +67,15 @@ public class BatchAcceptCustomerJob {
 
     private void doTaskItem() {
         //查询所有的未处理的customer任务
-        List<BatchTaskDTO> taskList = customerService.getTaskByStatus(0);
+        List<BatchTaskDTO> taskList = customerService.getTaskByStatus(Status.PREPARING);
 
         //分别解析每一个任务, 并将任务放到细节表中
         taskList.forEach(task->{
             //如果任务的数据为null,不用进行分解,直接将任务设置成处理成功即可
             if (Objects.isNull(task.getData())){
-                batchTaskRepository.changeTaskStatus(task.getTaskId(),1);
+                batchTaskRepository.changeTaskStatus(task.getTaskId(),Status.SUCCESS.ordinal());
             }
-            if (task.getOperate()== Operate.BATCH_ADD_CUSTOMER){
+            if (task.getType()== Type.BATCH_ADD_CUSTOMER){
                 //解析字符串分析出每一个任务,并将任务放到细节表中进行处理
                 Integer total = parseStringToTask(task);
 
@@ -82,7 +83,7 @@ public class BatchAcceptCustomerJob {
                 batchTaskRepository.setTaskTotal(task.getTaskId(),total);
 
                 //设置当前任务为进行中
-                batchTaskRepository.changeTaskStatus(task.getTaskId(),2);
+                batchTaskRepository.changeTaskStatus(task.getTaskId(),Status.RUNNING.ordinal());
             }
 
 
@@ -128,7 +129,7 @@ public class BatchAcceptCustomerJob {
                 //验证失败, 将任务字符串放到失败任务队列中
                 BatchTaskItem detail = new BatchTaskItem();
                 detail.setTaskId(batchTaskDTO.getTaskId());
-                detail.setState(-1);
+                detail.setState(Status.FAILURE);
                 detail.setMsg("数据解析失败,数据为: "+task);
                 insertItemTable(detail);
                 continue;
@@ -143,7 +144,7 @@ public class BatchAcceptCustomerJob {
     private void insertItemTOBatchTaskItem(BatchTaskDTO batchTaskDTO, Customer customer) {
         BatchTaskItem detail = new BatchTaskItem();
         detail.setTaskId(batchTaskDTO.getTaskId());
-        detail.setState(0);
+        detail.setState(Status.PREPARING);
         detail.setCustomerAge(customer.getCustomerAge());
         detail.setCustomerHome(customer.getCustomerHome());
         detail.setCustomerName(customer.getCustomerName());

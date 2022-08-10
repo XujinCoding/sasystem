@@ -4,6 +4,7 @@ import com.sa.customer.dto.ProductInstanceDTO;
 import com.sa.dto.job.BatchTaskDTO;
 import com.sa.domain.Customer;
 import com.sa.domain.ProductInstance;
+import com.sa.dto.job.Status;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface CustomerMapper {
      */
     List<ProductInstanceDTO> getProductListByProduct(Long customerId);
 
-    List<BatchTaskDTO> getTaskByStatus(@Param("status") Integer status);
+    List<BatchTaskDTO> getTaskByStatus(@Param("status") Status status);
 
     Customer findByAgeAndName(Customer customer);
 }

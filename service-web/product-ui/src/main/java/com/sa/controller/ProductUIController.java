@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache;
 import com.sa.customer.dto.SystemDTO;
 import com.sa.dto.PageResult;
 import com.sa.dto.job.BatchTaskDTO;
+import com.sa.dto.job.Status;
 import com.sa.guava.cache.GuavaCache;
 import com.sa.listener.ExcelListener;
 import com.sa.product.api.business.IProductService;
@@ -126,7 +127,7 @@ public class ProductUIController {
     @RequestMapping(value = "/submitTask",method = RequestMethod.POST)
     @ApiOperation(value = "提交一个定时批量任务 不需要传递ID 和 state 由后台自动生成")
     public SystemDTO submitTask(@RequestBody BatchTaskDTO batchTaskDTO){
-        batchTaskDTO.setState(0);
+        batchTaskDTO.setState(Status.PREPARING);
         System.out.println(batchTaskDTO);
         return new SystemDTO(200,productService.submitTask(batchTaskDTO),"");
     }

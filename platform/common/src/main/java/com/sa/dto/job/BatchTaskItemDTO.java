@@ -16,9 +16,9 @@ public class BatchTaskItemDTO {
 
     private Long taskId;
 
-    private Operate operate;
+    private Type type;
 
-    private Integer state;
+    private Status state;
 
     private Long customerId;
 
@@ -36,10 +36,11 @@ public class BatchTaskItemDTO {
 
     private String productRemark;
 
-    public BatchTaskItemDTO(Long id, Long taskId, Operate operate, Integer state, Long customerId, String customerName, Integer customerAge, String customerHome, String productName, Integer productPrice, Integer productNum, String productRemark) {
+
+    public BatchTaskItemDTO(Long id, Long taskId, Type type, Status state, Long customerId, String customerName, Integer customerAge, String customerHome, String productName, Integer productPrice, Integer productNum, String productRemark) {
         this.id = id;
         this.taskId = taskId;
-        this.operate = operate;
+        this.type = type;
         this.state = state;
         this.customerId = customerId;
         this.customerName = customerName;

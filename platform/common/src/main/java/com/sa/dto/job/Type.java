@@ -1,5 +1,5 @@
 package com.sa.dto.job;
 
-public enum Operate {
+public enum Type {
     BATCH_ADD_PRODUCT, BATCH_ADD_CUSTOMER
 }
