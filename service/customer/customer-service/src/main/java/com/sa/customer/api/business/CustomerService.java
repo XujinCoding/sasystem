@@ -1,16 +1,16 @@
 package com.sa.customer.api.business;
 
+import com.sa.common.dto.job.BatchTaskDTO;
+import com.sa.common.dto.job.Status;
+import com.sa.common.dto.job.TaskLevel;
+import com.sa.common.utils.OrikaMapperUtils;
+import com.sa.customer.domain.BatchTask;
+import com.sa.customer.domain.Customer;
+import com.sa.customer.domain.ProductInstance;
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
-import com.sa.dto.job.BatchTaskDTO;
-import com.sa.domain.BatchTask;
-import com.sa.domain.Customer;
-import com.sa.domain.ProductInstance;
-import com.sa.dto.job.Status;
-import com.sa.dto.job.TaskLevel;
-import com.sa.mapper.customer.jpa.BatchTaskRepository;
-import com.sa.mapper.customer.mybatis.CustomerMapper;
-import com.sa.utils.OrikaMapperUtils;
+import com.sa.customer.mapper.jpa.BatchTaskRepository;
+import com.sa.customer.mapper.mybatis.CustomerMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-@Service
+@Service("customerService")
 public class CustomerService implements ICustomerService {
 
     @Autowired

@@ -1,9 +1,9 @@
 package com.sa.product.api.business;
 
-import com.sa.dto.PageResult;
-import com.sa.dto.job.BatchTaskDTO;
 import com.sa.product.conditon.ProductQueryCondition;
 import com.sa.product.dto.ProductDTO;
+import com.sa.common.dto.PageResult;
+import com.sa.common.dto.job.BatchTaskDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 
 import javax.ws.rs.*;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author xujin
  */
-@FeignClient(name = "product-service", url = "localhost:8091")
+@FeignClient(name = "product-service", url = "localhost:8090")
 @Path("/product")
 @Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})

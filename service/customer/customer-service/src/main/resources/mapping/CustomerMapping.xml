@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sa.mapper.customer.mybatis.CustomerMapper">
+<mapper namespace="com.sa.customer.mapper.mybatis.CustomerMapper">
     <insert id="buyProduct">
         insert into PRODUCT_CUSTOMER_REL(CUSTOMER_ID,PRODUCT_ID,CREATE_TIME) values (#{customerId,jdbcType=NUMERIC},#{productId,jdbcType=NUMERIC},#{createTime,jdbcType=DATE})
     </insert>
-    <select id="findById" resultType="com.sa.domain.Customer">
+    <select id="findById" resultType="com.sa.customer.domain.Customer">
         select * from CUSTOMER where CUSTOMER_ID= #{customerId,jdbcType=NUMERIC}
     </select>
     <select id="findOfferByCustomerId" resultType="com.sa.customer.dto.ProductInstanceDTO">
@@ -17,10 +17,10 @@
     <select id="getProductListByProduct" resultType="com.sa.customer.dto.ProductInstanceDTO">
         select PRODUCT_ID,CUSTOMER_ID,CREATE_TIME from PRODUCT_CUSTOMER_REL where CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
     </select>
-    <select id="getTaskByStatus" resultType="com.sa.dto.job.BatchTaskDTO">
+    <select id="getTaskByStatus" resultType="com.sa.common.dto.job.BatchTaskDTO">
         select TASK_ID,TYPE,DATA from BATCH_TASK where STATE = #{status,jdbcType=NUMERIC}
     </select>
-    <select id="findByAgeAndName" resultType="com.sa.domain.Customer">
+    <select id="findByAgeAndName" resultType="com.sa.customer.domain.Customer">
         select * from CUSTOMER where CUSTOMER_NAME=#{customerName,jdbcType=VARCHAR} and CUSTOMER_AGE=#{customerAge,jdbcType=NUMERIC}
     </select>
 </mapper>

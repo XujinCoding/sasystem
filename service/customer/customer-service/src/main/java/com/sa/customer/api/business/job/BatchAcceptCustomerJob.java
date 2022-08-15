@@ -1,16 +1,16 @@
 package com.sa.customer.api.business.job;
 
 import com.sa.customer.api.business.ICustomerService;
-import com.sa.domain.BatchTask;
-import com.sa.domain.BatchTaskItem;
-import com.sa.domain.Customer;
-import com.sa.dto.job.BatchTaskDTO;
-import com.sa.dto.job.Status;
-import com.sa.dto.job.TaskLevel;
-import com.sa.dto.job.Type;
-import com.sa.mapper.customer.jpa.BatchTaskItemRepository;
-import com.sa.mapper.customer.jpa.BatchTaskRepository;
-import com.sa.utils.OrikaMapperUtils;
+import com.sa.customer.mapper.jpa.BatchTaskItemRepository;
+import com.sa.customer.mapper.jpa.BatchTaskRepository;
+import com.sa.customer.domain.Customer;
+import com.sa.common.dto.job.Type;
+import com.sa.customer.domain.BatchTask;
+import com.sa.customer.domain.BatchTaskItem;
+import com.sa.common.dto.job.BatchTaskDTO;
+import com.sa.common.dto.job.Status;
+import com.sa.common.dto.job.TaskLevel;
+import com.sa.common.utils.OrikaMapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -185,6 +185,7 @@ public class BatchAcceptCustomerJob {
         }
         return i;
     }
+    int k = 0;
     public void insertItemTOBatchTaskItem(BatchTaskDTO batchTaskDTO, Customer customer) {
         Integer customerAge = customer.getCustomerAge();
         String customerName = customer.getCustomerName();
@@ -200,8 +201,8 @@ public class BatchAcceptCustomerJob {
         List<BatchTaskItem> byCustomerAgeAndCustomerNameAndCustomerHome = batchTaskItemRepository.getByCustomerAgeAndCustomerNameAndCustomerHome(customerAge, customerName, customerHome);
         if (byCustomerAgeAndCustomerNameAndCustomerHome.size()==0)
             insertItemTable(detail);
-        i++;
-        if (i==5){
+        k++;
+        if (k==5){
             throw new RuntimeException("测试异常");
         }
     }

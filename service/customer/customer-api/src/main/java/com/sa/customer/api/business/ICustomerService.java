@@ -2,8 +2,8 @@ package com.sa.customer.api.business;
 
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
-import com.sa.dto.job.BatchTaskDTO;
-import com.sa.dto.job.Status;
+import com.sa.common.dto.job.BatchTaskDTO;
+import com.sa.common.dto.job.Status;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 

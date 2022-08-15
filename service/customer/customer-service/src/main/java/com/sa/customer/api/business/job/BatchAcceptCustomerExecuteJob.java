@@ -1,13 +1,13 @@
 package com.sa.customer.api.business.job;
 
-import com.sa.domain.BatchTaskItem;
-import com.sa.domain.Customer;
-import com.sa.dto.job.Status;
-import com.sa.dto.job.Type;
-import com.sa.mapper.customer.jpa.BatchTaskItemRepository;
-import com.sa.mapper.customer.jpa.BatchTaskRepository;
-import com.sa.mapper.customer.jpa.CustomerRepository;
-import com.sa.mapper.customer.mybatis.CustomerMapper;
+import com.sa.customer.domain.BatchTaskItem;
+import com.sa.customer.mapper.jpa.BatchTaskItemRepository;
+import com.sa.customer.mapper.jpa.BatchTaskRepository;
+import com.sa.customer.mapper.mybatis.CustomerMapper;
+import com.sa.customer.domain.Customer;
+import com.sa.common.dto.job.Status;
+import com.sa.common.dto.job.Type;
+import com.sa.customer.mapper.jpa.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

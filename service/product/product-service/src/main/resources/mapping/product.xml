@@ -2,10 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sa.mapper.mybaits.ProductMapper">
-
-
-
+<mapper namespace="com.sa.product.mapper.mybaits.ProductMapper">
 
 
     <update id="changeTaskState">
@@ -15,14 +12,15 @@
         UPDATE BATCH_TASK SET SUCCESS_NUM=#{successNum} where TASK_ID=#{taskId}
     </update>
 
-    <select id="getAll" resultType="com.sa.domain.Product">
+    <select id="getAll" resultType="com.sa.product.domain.Product">
         SELECT * FROM PRODUCT
 
     </select>
-    <select id="getProductById" resultType="com.sa.domain.Product">
+    <select id="getProductById" resultType="com.sa.product.domain.Product">
         select * from PRODUCT where PRODUCT_ID=#{productId}
     </select>
-    <select id="findByParameters" resultType="com.sa.domain.Product">
+    <select id="findByParameters" resultType="com.sa.product.domain.Product">
+select * from(
         select * from PRODUCT
         <where>
             <if test="productId!=null and productId!=''">
@@ -40,23 +38,22 @@
             <if test="productRemark!=null and productRemark!=''">
                 and PRODUCT_REMARK=#{productRemark}
             </if>
+            <if test="pageNum!=null and pageSize!=null">
+                and rownum &lt;= #{pageNum}*#{pageSize}
+            </if>
         </where>
-    <if test="pageNum!=null and pageSize!=null">
-        limit pageNum,pageSize
-    </if>
+                 order by PRODUCT_ID
+        ) where
+        <if test="pageNum!=null and pageSize!=null">
+            rownum >= (#{pageNum}-1)*#{pageSize}
+        </if>
 
     </select>
-    <select id="getProductNonTask" resultType="com.sa.domain.BatchTask">
-        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE=0 and MODEL = 0
-    </select>
-    <select id="getProductTaskIng" resultType="com.sa.domain.BatchTask">
-        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE = 2 and MODEL = 0
-    </select>
 
-    <select id="getTaskType" resultType="com.sa.dto.job.Type">
+    <select id="getTaskType" resultType="com.sa.common.dto.job.Type">
         select TYPE from BATCH_TASK where TASK_ID=#{taskId,jdbcType=NUMERIC}
     </select>
-    <select id="getProductDistinct" resultType="com.sa.domain.Product">
+    <select id="getProductDistinct" resultType="com.sa.product.domain.Product">
         select * from PRODUCT where PRODUCT_NAME=#{productName,jdbcType=VARCHAR} and PRODUCT_PRICE=#{productPrice,jdbcType=NUMERIC}
     </select>
 
@@ -80,15 +77,15 @@
         select COUNT(*) from BATCH_TASK_ITEM where TASK_ID=#{taskId,jdbcType=NUMERIC} and STATE=1
     </select>
 
-    <select id="getNotRunningTask" resultType="com.sa.domain.BatchTask">
+    <select id="getNotRunningTask" resultType="com.sa.product.domain.BatchTask">
         select TASK_ID,TYPE,DATA from BATCH_TASK where STATE=0
     </select>
-    <select id="getRunningTask" resultType="com.sa.domain.BatchTask">
+    <select id="getRunningTask" resultType="com.sa.product.domain.BatchTask">
         select TASK_ID,DATA
         from BATCH_TASK
         where STATE=2
     </select>
-    <select id="getAllTasking" resultType="com.sa.domain.BatchTaskItem">
+    <select id="getAllTasking" resultType="com.sa.product.domain.BatchTaskItem">
         select * from BATCH_TASK_ITEM where STATE=0
     </select>
 
