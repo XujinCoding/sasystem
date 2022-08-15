@@ -23,4 +23,6 @@ public interface BatchTaskItemRepository extends JpaRepository<BatchTaskItem,Lon
 
     //根据TaskId 和 State 查询完成数或者失败数
     Integer countBatchTaskItemByStateAndTaskId(Status state, Long taskId);
+
+    List<BatchTaskItem> getByCustomerAgeAndCustomerNameAndCustomerHome(Integer customerAge, String customerName, String customerHome);
 }

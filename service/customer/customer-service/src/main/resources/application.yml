@@ -17,6 +17,17 @@ spring:
   jpa:
     #配置在日志中打印出执行的 SQL 语句信息。
     show-sql: true
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6973
+    timeout: 500
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0
 mybatis-plus:
   mapper-locations: classpath:mapping/*.xml
   configuration:

@@ -132,7 +132,7 @@ public class CustomerController {
     public BatchTaskDTO asynchronouslyAddCustomer(@RequestBody BatchTaskDTO batchTaskDTO) {
         /**
          * {
-         *     "operate":"0",
+         *     "type":"0",
          *     "data":"顾客1,123,2 顾客2,3,2"
          * }
          */

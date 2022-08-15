@@ -2,6 +2,7 @@ package com.sa.domain;
 
 
 import com.sa.dto.job.Status;
+import com.sa.dto.job.TaskLevel;
 import com.sa.dto.job.Type;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,9 @@ public class BatchTask {
     private String data;
     @Column(name = "STATE")
     private Status state;
+    @Column(name = "TASK_LEVEL")
+    @Enumerated
+    private TaskLevel taskLevel;
 
 
     public BatchTask(Long taskId, Type type, String data, Status state) {

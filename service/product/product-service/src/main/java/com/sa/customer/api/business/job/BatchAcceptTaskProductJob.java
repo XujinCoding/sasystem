@@ -7,6 +7,7 @@ import com.sa.dto.job.Type;
 import com.sa.mapper.mybaits.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -24,7 +25,8 @@ public class BatchAcceptTaskProductJob {
     private ProductMapper productMapper;
 
 //    private static BloomFilter<ProductDTO> bloomFilter = BloomFilter.create(Funnels.integerFunnel())
-
+    @Autowired
+    ApplicationContext applicationContext;
 
 
 

@@ -18,5 +18,5 @@ public class BatchTaskDTO {
     private Type type;
     private String data;
     private Status state;
-
+    private TaskLevel taskLevel;
 }

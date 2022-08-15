@@ -7,6 +7,7 @@ import com.sa.domain.BatchTask;
 import com.sa.domain.Customer;
 import com.sa.domain.ProductInstance;
 import com.sa.dto.job.Status;
+import com.sa.dto.job.TaskLevel;
 import com.sa.mapper.customer.jpa.BatchTaskRepository;
 import com.sa.mapper.customer.mybatis.CustomerMapper;
 import com.sa.utils.OrikaMapperUtils;
@@ -87,6 +88,7 @@ public class CustomerService implements ICustomerService {
     public BatchTaskDTO createAsynchronouslyTask(BatchTaskDTO batchTaskDTO) {
         batchTaskDTO.setState(Status.PREPARING);
         BatchTask map = OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTaskDTO, BatchTask.class);
+        map.setTaskLevel(TaskLevel.DEFAULT);
         BatchTask batchTask = batchTaskRepository.save(map);
 
         return OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTask, BatchTaskDTO.class);

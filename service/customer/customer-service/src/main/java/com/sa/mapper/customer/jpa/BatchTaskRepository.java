@@ -1,6 +1,8 @@
 package com.sa.mapper.customer.jpa;
 
 import com.sa.domain.BatchTask;
+import com.sa.dto.job.Status;
+import com.sa.dto.job.TaskLevel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaSpecificationExecutor<BatchTask> {
@@ -21,9 +25,6 @@ public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaS
     @Transactional
     @Query(value = "UPDATE BATCH_TASK set TOTAL=:total where TASK_ID=:taskId",nativeQuery = true)
     void setTaskTotal(@Param("taskId")Long taskId, @Param("total")Integer total);
-
-
-
 
 
     @Modifying
@@ -42,4 +43,14 @@ public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaS
 
     @Query(value = "select TYPE FROM BATCH_TASK WHERE TASK_ID=:taskId",nativeQuery = true)
     Integer findTypeByTaskId(@Param("taskId") Long taskId);
+
+    List<BatchTask> findByTaskId(Long taskId);
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE BATCH_TASK set TASK_LEVEL=:level where TASK_ID=:taskId",nativeQuery = true)
+    void changeTaskLevelByTaskId(Long taskId, TaskLevel level);
+
+    List<BatchTask> getByStateOrderByTaskLevelDescTaskIdAsc(Status state);
+
+
 }

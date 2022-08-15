@@ -10,11 +10,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @MapperScan("com.sa.mapper.customer.mybatis")
 @EnableScheduling
-@EnableAspectJAutoProxy(proxyTargetClass = false,exposeProxy = true)
+@EnableTransactionManagement
+@EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 public class CustonerServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(CustonerServiceApplication.class,args);
