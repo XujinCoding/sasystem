@@ -1,16 +1,15 @@
 package com.sa.product.api.business.job;
 
+import com.sa.common.dto.job.Status;
+import com.sa.common.dto.job.Type;
+import com.sa.common.utils.OrikaMapperUtils;
 import com.sa.product.domain.BatchTaskItem;
 import com.sa.product.domain.Product;
 import com.sa.product.dto.ProductDTO;
 import com.sa.product.mapper.ProductRepository;
 import com.sa.product.mapper.mybaits.ProductMapper;
-import com.sa.common.utils.OrikaMapperUtils;
-import com.sa.common.dto.job.Status;
-import com.sa.common.dto.job.Type;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,7 +27,6 @@ public class BatchAcceptExecuteProductJob {
     /**
      * 定时任务每100秒执行一次
      */
-    @Scheduled(fixedDelay = 10000)
     public void execute() {
         List<BatchTaskItem> taskingList = productMapper.getAllTasking();
         taskingList.forEach((task -> {

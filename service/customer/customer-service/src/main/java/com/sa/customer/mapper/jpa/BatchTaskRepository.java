@@ -1,8 +1,8 @@
 package com.sa.customer.mapper.jpa;
 
-import com.sa.customer.domain.BatchTask;
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.TaskLevel;
+import com.sa.customer.domain.BatchTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -48,9 +48,12 @@ public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaS
     @Modifying
     @Transactional
     @Query(value = "UPDATE BATCH_TASK set TASK_LEVEL=:level where TASK_ID=:taskId",nativeQuery = true)
-    void changeTaskLevelByTaskId(Long taskId, TaskLevel level);
+    void changeTaskLevelByTaskId(@Param("taskId")Long taskId, @Param("level")TaskLevel level);
 
     List<BatchTask> getByStateOrderByTaskLevelDescTaskIdAsc(Status state);
+
+    @Query(value = "select TASK_ID FROM BATCH_TASK WHERE STATE=:state",nativeQuery = true)
+    List<Long> findTasIdByState(@Param("state")Integer state);
 
 
 }

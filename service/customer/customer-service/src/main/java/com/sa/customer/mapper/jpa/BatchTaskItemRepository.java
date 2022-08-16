@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface BatchTaskItemRepository extends JpaRepository<BatchTaskItem,Long>, JpaSpecificationExecutor<BatchTaskItem> {
-    List<BatchTaskItem> findBatchTaskItemsByState(Status state);
+    List<BatchTaskItem> findBatchTaskItemsByStateAndTaskIdOrderById(Status state, Long taskId);
 
     @Transactional
     @Modifying

@@ -1,14 +1,13 @@
 package com.sa.product.api.business.job;
 
-import com.sa.product.domain.BatchTask;
-import com.sa.product.domain.BatchTaskItem;
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.Type;
+import com.sa.product.domain.BatchTask;
+import com.sa.product.domain.BatchTaskItem;
 import com.sa.product.mapper.mybaits.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +32,6 @@ public class BatchAcceptTaskProductJob {
     /**
      * 创建定时任务, 去任务库中拿到任务,并且解析成细节
      */
-    @Scheduled(fixedDelay = 10000)
     public void parseProductTask(){
 
         //解析任务
@@ -52,7 +50,7 @@ public class BatchAcceptTaskProductJob {
         //这一步只去进行拆分操作, 并且将数据插入到明细表中
 
         tasksListNon.forEach((task)->{
-            if (task.getType() == Type.BATCH_ADD_PRODUCT)
+            if (Type.BATCH_ADD_PRODUCT.equals(task.getType()))
                 parseBatchAddProductTask(task);
         });
     }

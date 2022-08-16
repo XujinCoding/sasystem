@@ -55,7 +55,7 @@ public interface IProductService {
 
     /**
      * 根据前端填写的信息,查询值返回
-     * 我什么使用post 因为jesery报错, get请求不能消耗一个实体
+     * 为什么使用post 因为jersey报错, get请求不能消耗一个实体
      *
      * @param condition 参数
      * @return 查询结果
@@ -69,7 +69,7 @@ public interface IProductService {
     /**
      * 根据前端填写的信息,查询值返回
      * 弃用原因见controller
-     * 我什么使用post 因为jesery报错, get请求不能消耗一个实体
+     * 我什么使用post 因为jersey报错, get请求不能消耗一个实体
      *
      * @param productId     商品Id
      * @param productName   商品名

@@ -17,16 +17,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableScheduling
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
-public class CustonerServiceApplication {
+public class CustomerServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CustonerServiceApplication.class,args);
+        SpringApplication.run(CustomerServiceApplication.class,args);
     }
     @Bean
     public ResourceConfig jerseyConfig(ApplicationContext applicationContext){
         ResourceConfig resourceConfig = new ResourceConfig();
-        //注册jesery注解扫描器
+        //注册jersey注解扫描器
         resourceConfig.registerClasses(JerseyServiceAutoScanner.getPublishJerseyServiceClasses(applicationContext,"com.sa.customer.api.business"));
-        /**
+        /*
          * 用于进行枚举参数在传递的时候,使用@EnumFormat注解进行标记之后转换
          */
         resourceConfig.register(EnumParamConverter.class);

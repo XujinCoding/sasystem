@@ -19,7 +19,7 @@ public class ExcelListener<T> extends AnalysisEventListener<T> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-        System.out.println("数据全部解析完成");
+        log.info("数据全部解析完成");
     }
     public List<T> getList(){
         return this.list;

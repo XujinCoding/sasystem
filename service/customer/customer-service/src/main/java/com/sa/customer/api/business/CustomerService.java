@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service("customerService")
 public class CustomerService implements ICustomerService {
@@ -39,8 +40,7 @@ public class CustomerService implements ICustomerService {
         System.out.println(customerId);
         Customer customer = customerMapper.findById(customerId);
         MapperFactory build = new DefaultMapperFactory.Builder().build();
-        CustomerDTO customerDTO = build.getMapperFacade().map(customer, CustomerDTO.class);
-        return  customerDTO;
+        return build.getMapperFacade().map(customer, CustomerDTO.class);
     }
 
     /**
@@ -50,15 +50,12 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public List<ProductInstanceDTO> buyProduct(List<ProductInstanceDTO> list) {
-        list.forEach((s)->{
-            s.setCreateTime(ZonedDateTime.now());
-        });
         DefaultMapperFactory build = new DefaultMapperFactory.Builder().build();
         List<ProductInstance> productInstances = build.getMapperFacade().mapAsList(list, ProductInstance.class);
         productInstances.forEach((instant)->{
+            instant.setCreateTime(ZonedDateTime.now());
             customerMapper.buyProduct(instant);
         });
-        //TODO : --------
         return list;
     }
 
@@ -69,8 +66,7 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public List<ProductInstanceDTO> findOfferByCustomerId(Long customerId) {
-        List<ProductInstanceDTO> list = customerMapper.findOfferByCustomerId(customerId);
-        return list;
+        return customerMapper.findOfferByCustomerId(customerId);
     }
 
     @Override
@@ -88,7 +84,9 @@ public class CustomerService implements ICustomerService {
     public BatchTaskDTO createAsynchronouslyTask(BatchTaskDTO batchTaskDTO) {
         batchTaskDTO.setState(Status.PREPARING);
         BatchTask map = OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTaskDTO, BatchTask.class);
-        map.setTaskLevel(TaskLevel.DEFAULT);
+        if (Objects.isNull(map.getTaskLevel())){
+            map.setTaskLevel(TaskLevel.DEFAULT);
+        }
         BatchTask batchTask = batchTaskRepository.save(map);
 
         return OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTask, BatchTaskDTO.class);

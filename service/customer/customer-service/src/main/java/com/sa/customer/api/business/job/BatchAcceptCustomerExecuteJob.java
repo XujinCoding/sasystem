@@ -1,19 +1,23 @@
 package com.sa.customer.api.business.job;
 
-import com.sa.customer.domain.BatchTaskItem;
-import com.sa.customer.mapper.jpa.BatchTaskItemRepository;
-import com.sa.customer.mapper.jpa.BatchTaskRepository;
-import com.sa.customer.mapper.mybatis.CustomerMapper;
-import com.sa.customer.domain.Customer;
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.Type;
+import com.sa.customer.domain.BatchTaskItem;
+import com.sa.customer.domain.Customer;
+import com.sa.customer.mapper.jpa.BatchTaskItemRepository;
+import com.sa.customer.mapper.jpa.BatchTaskRepository;
 import com.sa.customer.mapper.jpa.CustomerRepository;
+import com.sa.customer.mapper.mybatis.CustomerMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 import java.util.Objects;
@@ -42,48 +46,104 @@ public class BatchAcceptCustomerExecuteJob {
     @Autowired
     private RedissonClient redissonClient;
 
-    @Scheduled(fixedDelay = 100000)
-    public void executeTaskItem(){
-        List<BatchTaskItem> taskItems = batchTaskItemRepository.findBatchTaskItemsByState(Status.PREPARING);
-        taskItems.forEach(item->{
-            RLock fairLock = redissonClient.getFairLock(priKey +"_ADD_ITEM_INTO_CUSTOMER:"+ item.getId());
-            if (tryLock(fairLock,20, TimeUnit.SECONDS)) {//是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
-                Integer typeNum = batchTaskRepository.findTypeByTaskId(item.getTaskId());
-                if (typeNum == Type.BATCH_ADD_CUSTOMER.ordinal()) {
-                    try {
-                        //将信息插入到Customer表中
-                        addItemIntoCustomer(item);
+    @Autowired
+    private PlatformTransactionManager txManager;
 
-                        //修改信息
-                        batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(), "");
+//    private List<BatchTaskItem> getTaskItemList() {
+//        List<Long> taskIdList = batchTaskRepository.findTasIdByState(Status.RUNNING);
+//        List<BatchTaskItem> taskItems = new ArrayList<>();
+//        taskIdList.forEach((taskId)->{
+//            taskItems.addAll(batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId));
+//        });
+//        return taskItems;
+//    }
 
-                    } catch (Exception e) {
-                        String message = e.getMessage();
-                        batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.FAILURE.ordinal(), message);
 
+    @Scheduled(fixedDelay = 10000)
+    public void executeTaskItem() {
+        List<Long> taskIdList = batchTaskRepository.findTasIdByState(Status.RUNNING.ordinal());
+        taskIdList.forEach(taskId -> {
+            RLock fairLock = redissonClient.getFairLock(priKey + "_ADD_ITEM_INTO_CUSTOMER:" + taskId);
+
+            //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
+            if (tryLock(fairLock, TimeUnit.SECONDS)) {
+                List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);
+                itemList.forEach((item) -> {
+                    Integer typeNum = batchTaskRepository.findTypeByTaskId(item.getTaskId());
+                    if (typeNum == Type.BATCH_ADD_CUSTOMER.ordinal()) {
+                        //手动开启事务
+                        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+                        TransactionStatus status = txManager.getTransaction(def);
+                        try {
+                            //将信息插入到Customer表中
+                            addItemIntoCustomer(item);
+                            //修改信息
+                            batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(), "");
+
+                            Thread.sleep(200);
+
+                            //提交任务
+                            txManager.commit(status);
+                        } catch (Exception e) {
+                            String message = e.getMessage();
+                            txManager.rollback(status);
+                            batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.FAILURE.ordinal(), message);
+                        }
                     }
-                }
+                });
+                fairLock.unlock();
             }
         });
     }
+
+//    @Scheduled(fixedDelay = 100000)
+//    public void executeTaskItem(){
+//        List<BatchTaskItem> taskItems = getTaskItemList();
+//        taskItems.forEach(item->{
+//            RLock fairLock = redissonClient.getFairLock(priKey +"_ADD_ITEM_INTO_CUSTOMER:"+ item.getTaskId());
+//            //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
+//            if (tryLock(fairLock, TimeUnit.SECONDS)) {
+//                Integer typeNum = batchTaskRepository.findTypeByTaskId(item.getTaskId());
+//                if (typeNum == Type.BATCH_ADD_CUSTOMER.ordinal()) {
+//                    try {
+//                        //将信息插入到Customer表中
+//                        addItemIntoCustomer(item);
+//
+//                        //修改信息
+//                        batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(), "");
+//
+//                    } catch (Exception e) {
+//                        String message = e.getMessage();
+//                        batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.FAILURE.ordinal(), message);
+//
+//                    }
+//                }
+//                fairLock.unlock();
+//            }
+//
+//        });
+//    }
+
 
     private void addItemIntoCustomer(BatchTaskItem item) {
         Customer customer = new Customer();
         customer.setCustomerAge(item.getCustomerAge());
         customer.setCustomerHome(item.getCustomerHome());
         customer.setCustomerName(item.getCustomerName());
-        Customer target =  customerMapper.findByAgeAndName(customer);
-        if (Objects.isNull(target)){
+        Customer target = customerMapper.findByAgeAndName(customer);
+        if (Objects.isNull(target)) {
             Customer save = customerRepository.save(customer);
-            log.info("------------存储到Customer表-----------"+save);
-        }else{
+            log.info("------------存储到Customer表-----------" + save);
+        } else {
             throw new RuntimeException("用户已经存在");
         }
     }
-    public Boolean tryLock(RLock rLock, long leaseTime, TimeUnit unit) {
+
+    public Boolean tryLock(RLock rLock, TimeUnit unit) {
         boolean tryLock = false;
         try {
-            tryLock = rLock.tryLock(0, leaseTime, unit);
+            tryLock = rLock.tryLock(0, -1, unit);
         } catch (InterruptedException e) {
             return false;
         }

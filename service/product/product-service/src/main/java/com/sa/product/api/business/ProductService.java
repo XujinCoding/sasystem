@@ -50,8 +50,6 @@ public class ProductService implements IProductService {
         //使用Orika复制工具
         MapperFactory build = new DefaultMapperFactory.Builder().build();
         List<ProductDTO> productDTOS = build.getMapperFacade().mapAsList(all, ProductDTO.class);
-        System.out.println(productDTOS);
-        System.out.println("service");
         return productDTOS;
     }
 
@@ -160,8 +158,7 @@ public class ProductService implements IProductService {
                     list.add(equalProductRemark);
                 }
                 Predicate[] pre = new Predicate[list.size()];
-                Predicate and = criteriaBuilder.and(list.toArray(pre));
-                return and;
+                return criteriaBuilder.and(list.toArray(pre));
             }
         };
         if (Objects.isNull(condition.getPageNum()) || Objects.isNull(condition.getPageSize())){

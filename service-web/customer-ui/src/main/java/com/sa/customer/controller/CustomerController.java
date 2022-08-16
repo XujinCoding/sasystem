@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -48,12 +49,13 @@ public class CustomerController {
 
     /**
      * 用于测试两个服务之间的连通性, 获取所有的product
+     *
      * @return 所有的product
      */
     @ApiOperation(value = "获取所有的Product")
     @RequestMapping(value = "product/all", method = RequestMethod.GET)
     @ResponseBody
-    public List<ProductDTO> getProductInfos(){
+    public List<ProductDTO> getProductInfos() {
         return productService.getAll();
     }
 
@@ -66,7 +68,7 @@ public class CustomerController {
     @ResponseBody
     @ApiOperation(value = "使用缓存根据customerId查询product列表")
     @RequestMapping(value = "by-customerId/{customerId}", method = RequestMethod.GET)
-    public List<ProductInstanceDTO> findProductByCustomerId(@PathVariable Long customerId){
+    public List<ProductInstanceDTO> findProductByCustomerId(@PathVariable Long customerId) {
         List<ProductInstanceDTO> productIdList = customerService.getProductListByProduct(customerId);
         productIdList.forEach(instanceDTO -> {
             try {
@@ -82,12 +84,13 @@ public class CustomerController {
 
     /**
      * 直接从数据库中获取商品列表信息
+     *
      * @param customerId 客户ID
      */
     @ResponseBody
     @ApiOperation(value = "直接从数据库中获取商品列表信息")
     @RequestMapping(value = "getProduct/{customerId}", method = RequestMethod.GET)
-    public List<ProductInstanceDTO> findProductInstanceByCustomerId( @PathVariable Long customerId){
+    public List<ProductInstanceDTO> findProductInstanceByCustomerId(@PathVariable Long customerId) {
         List<ProductInstanceDTO> list = customerService.findOfferByCustomerId(customerId);
         System.out.println(list);
         return list;
@@ -95,47 +98,34 @@ public class CustomerController {
 
     /**
      * 根据商品Id查询商品
+     *
      * @param id 商品Id
      * @return
      */
     @RequestMapping(value = "product/findById", method = RequestMethod.GET)
     @ApiOperation(value = "根据商品Id查询商品")
     @ResponseBody
-    public ProductDTO findById(Long id){
+    public ProductDTO findById(Long id) {
         return productService.findById(id);
     }
 
     /**
      * 购买商品
+     *
      * @param list 购买的商品信息列表
      */
     @ResponseBody
     @ApiOperation(value = "购买商品")
-    @RequestMapping(value = "/customer/buyProduct", method = RequestMethod.POST,produces = "application/json")
+    @RequestMapping(value = "/customer/buyProduct", method = RequestMethod.POST, produces = "application/json")
     public void buyProduct(@RequestBody List<ProductInstanceDTO> list) {
-        System.out.println(list);
         customerService.buyProduct(list);
-
-        //TODO : 功能性验证
-
-        //查看用户是否存在
-
-        //查看商品是否存在
-
     }
-
 
 
     @ResponseBody
     @ApiOperation(value = "异步批量添加客户")
-    @RequestMapping(value = "/asynchronouslyAddCustomer", method = RequestMethod.POST,produces = "application/json")
+    @RequestMapping(value = "/asynchronouslyAddCustomer", method = RequestMethod.POST, produces = "application/json")
     public BatchTaskDTO asynchronouslyAddCustomer(@RequestBody BatchTaskDTO batchTaskDTO) {
-        /**
-         * {
-         *     "type":"0",
-         *     "data":"顾客1,123,2 顾客2,3,2"
-         * }
-         */
         return customerService.createAsynchronouslyTask(batchTaskDTO);
     }
 }
