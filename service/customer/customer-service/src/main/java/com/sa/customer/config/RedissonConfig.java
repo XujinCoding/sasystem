@@ -12,6 +12,7 @@ public class RedissonConfig {
     public RedissonClient redissonClient(){
         Config c = new Config();
         c.useSingleServer().setAddress("redis://127.0.0.1:6973");
+        //c.setLockWatchdogTimeout()
         return Redisson.create(c);
     }
 

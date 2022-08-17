@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 /**
  * 本类只去解析批量任务, 将批量任务分解到明细表, 还会进行状态的判断
+ * @author xujin
  */
 @Component
 @Slf4j
@@ -23,7 +24,6 @@ public class BatchAcceptTaskProductJob {
     @Autowired
     private ProductMapper productMapper;
 
-//    private static BloomFilter<ProductDTO> bloomFilter = BloomFilter.create(Funnels.integerFunnel())
     @Autowired
     ApplicationContext applicationContext;
 
@@ -50,12 +50,15 @@ public class BatchAcceptTaskProductJob {
         //这一步只去进行拆分操作, 并且将数据插入到明细表中
 
         tasksListNon.forEach((task)->{
-            if (Type.BATCH_ADD_PRODUCT.equals(task.getType()))
+            if (Type.BATCH_ADD_PRODUCT.equals(task.getType())) {
                 parseBatchAddProductTask(task);
+            }
         });
     }
 
-    //从任务列表中取出任务, 将任务入库
+    /**
+     *  从任务列表中取出任务, 将任务入库
+     */
     private void parseBatchAddProductTask(BatchTask task) {
         //将字符串进行解析并且入库
         Integer size = parseString(task);
@@ -110,7 +113,6 @@ public class BatchAcceptTaskProductJob {
                             !Pattern.matches("^-?\\d+(\\.\\d+)?$",split1[2])||
                             StringUtils.isEmpty(split1[3])
             ){
-//                productMapper.setItemStatus(batchTask.getTaskId(), -1, "数据解析出错:" + batchTask.getData());
                 BatchTaskItem batchTaskItem = new BatchTaskItem();
                 batchTaskItem.setTaskId(batchTask.getTaskId());
                 batchTaskItem.setMsg("数据解析出错:" + batchTask.getData());
@@ -130,7 +132,4 @@ public class BatchAcceptTaskProductJob {
         }
         return i;
     }
-
-
-
 }

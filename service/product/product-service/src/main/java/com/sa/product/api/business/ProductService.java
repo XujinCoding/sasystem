@@ -10,8 +10,6 @@ import com.sa.product.dto.ProductDTO;
 import com.sa.product.mapper.ProductRepository;
 import com.sa.product.mapper.mybaits.ProductMapper;
 import io.jsonwebtoken.lang.Assert;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +35,6 @@ public class ProductService implements IProductService {
     public List<ProductDTO> getAll() {
         //使用MyBatis进行查询
         List<Product> all = productMapper.getAll();
-
         //----------对象关系映射------------
 //        //将product 映射到productDTO中
 //        //普通方法
@@ -48,9 +45,7 @@ public class ProductService implements IProductService {
 //        System.out.println(result);
 
         //使用Orika复制工具
-        MapperFactory build = new DefaultMapperFactory.Builder().build();
-        List<ProductDTO> productDTOS = build.getMapperFacade().mapAsList(all, ProductDTO.class);
-        return productDTOS;
+        return  OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all, ProductDTO.class);
     }
 
     /**
@@ -60,20 +55,13 @@ public class ProductService implements IProductService {
      */
     public  List<ProductDTO>findAllByFunction(){
         List<Product> all1 = productRepository.findAll();
-        all1.forEach((s)->{
-            System.out.println(s.toString());
-        });
-        MapperFactory build = new DefaultMapperFactory.Builder().build();
-        List<ProductDTO> productDTOS = build.getMapperFacade().mapAsList(all1, ProductDTO.class);
-        return productDTOS;
+        return OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all1, ProductDTO.class);
     }
+
     public ProductDTO findById(Long productId) {
-        Product byProductId = productRepository.findByProductId(1L);
-        ProductDTO productDTO = OrikaMapperUtils.getOrikaMapperFaceCode().map(byProductId, ProductDTO.class);
-        return productDTO;
+        Product product = productRepository.findByProductId(productId);
+        return OrikaMapperUtils.getOrikaMapperFaceCode().map(product, ProductDTO.class);
     }
-
-
 
 //        //使用JPA方法编写规范编写的方法
 //        Product allByProductId = productRepository.findByProductId(1L);
@@ -91,21 +79,17 @@ public class ProductService implements IProductService {
 //        all2.forEach((s)->{
 //            System.out.println(s.toString());
 //        });
-
-
-
     @Override
     public ProductDTO update(ProductDTO productDTO) {
         Assert.notNull(productDTO);
-        MapperFactory build = new DefaultMapperFactory.Builder().build();
-        Product product = build.getMapperFacade().map(productDTO, Product.class);
+        Product product = OrikaMapperUtils.getOrikaMapperFaceCode().map(productDTO, Product.class);
         //去数据库中查询商品, 看是否存在这个商品
         Product findProduct = productMapper.getProductById(product.getProductId());
-        //如果存在这个商品,就去修改商品的属性,这样做就可以屏蔽save 新增的属性
+        //如果存在这个商品,就去修改商品的属性
         if (findProduct != null) {
             Product productResult = productRepository.save(product);
             //返回修改之后的数据
-            return build.getMapperFacade().map(productResult, ProductDTO.class);
+            return OrikaMapperUtils.getOrikaMapperFaceCode().map(productResult, ProductDTO.class);
         }
         //如果数据库中没有这个商品就返回null 让控制器去判断.
         return null;
@@ -114,8 +98,7 @@ public class ProductService implements IProductService {
     public List<ProductDTO> saveAll(List<ProductDTO> data){
         List<Product> list = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(data, Product.class);
         List<Product> listMid = productRepository.saveAll(list);
-        List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
-        return listReturn;
+        return OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
     }
 
     @Override
@@ -133,7 +116,8 @@ public class ProductService implements IProductService {
     public PageResult findByParametersUseJPA(ProductQueryCondition condition) {
         PageResult pageResult = new PageResult();
         List<Product> productList;
-        Specification<Product> specification = new Specification<Product>() {//相当于一个过滤器,或者说是配置文件, 根据写的配置进行过滤
+        //相当于一个过滤器,或者说是配置文件, 根据写的配置进行过滤
+        Specification<Product> specification = new Specification<Product>() {
             @Override
             public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<>();
@@ -189,14 +173,6 @@ public class ProductService implements IProductService {
         return true;
     }
 
-
-//    @Override
-//    public List<ProductDTO> findByParameters(Long productId,String productName,Integer productPrice,Integer productNum,String productRemark){
-//        Product product = new Product(productId,productName,productPrice,productNum,productRemark);
-//        List<Product> listMid = productMapper.findByParameters(product);
-//        List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
-//        return listReturn;
-//    }
 
 
 }

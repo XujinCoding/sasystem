@@ -25,11 +25,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 本类用于执行任务细节, 将任务添加到指定数据库中
+ * @author xujin
  */
 @Component
 @Slf4j
 public class BatchAcceptCustomerExecuteJob {
-    private static final String priKey = "BATCH_ACCEPT_CUSTOMER";
+    private static final String PRI_KEY = "BATCH_ACCEPT_CUSTOMER";
 
     @Autowired
     private CustomerMapper customerMapper;
@@ -63,8 +64,7 @@ public class BatchAcceptCustomerExecuteJob {
     public void executeTaskItem() {
         List<Long> taskIdList = batchTaskRepository.findTasIdByState(Status.RUNNING.ordinal());
         taskIdList.forEach(taskId -> {
-            RLock fairLock = redissonClient.getFairLock(priKey + "_ADD_ITEM_INTO_CUSTOMER:" + taskId);
-
+            RLock fairLock = redissonClient.getFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId);
             //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
             if (tryLock(fairLock, TimeUnit.SECONDS)) {
                 List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);
@@ -80,8 +80,6 @@ public class BatchAcceptCustomerExecuteJob {
                             addItemIntoCustomer(item);
                             //修改信息
                             batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(), "");
-
-                            Thread.sleep(200);
 
                             //提交任务
                             txManager.commit(status);

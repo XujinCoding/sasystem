@@ -11,8 +11,6 @@ import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
 import com.sa.customer.mapper.jpa.BatchTaskRepository;
 import com.sa.customer.mapper.mybatis.CustomerMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +35,8 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public CustomerDTO findById(Long customerId) {
-        System.out.println(customerId);
         Customer customer = customerMapper.findById(customerId);
-        MapperFactory build = new DefaultMapperFactory.Builder().build();
-        return build.getMapperFacade().map(customer, CustomerDTO.class);
+        return OrikaMapperUtils.getOrikaMapperFaceCode().map(customer, CustomerDTO.class);
     }
 
     /**
@@ -50,8 +46,7 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public List<ProductInstanceDTO> buyProduct(List<ProductInstanceDTO> list) {
-        DefaultMapperFactory build = new DefaultMapperFactory.Builder().build();
-        List<ProductInstance> productInstances = build.getMapperFacade().mapAsList(list, ProductInstance.class);
+        List<ProductInstance> productInstances = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(list, ProductInstance.class);
         productInstances.forEach((instant)->{
             instant.setCreateTime(ZonedDateTime.now());
             customerMapper.buyProduct(instant);
