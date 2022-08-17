@@ -51,7 +51,7 @@ public class GuavaCache {
                 //设置缓存的并发级别为CPU核心数,就是同一时刻的并发数, 默认为4, 一般设置为CPU的核心数量
                 .concurrencyLevel(Runtime.getRuntime().availableProcessors())
                 //过期策略: 当数据到达指定时间没有被读或者写, 这个数据将会被作为过期数据进行处理, 当没有数据或者读到过期数据的时候只允许一个线程去更新数据,其他线程阻塞,等待更新完成在获取新的值
-                .expireAfterAccess(2, TimeUnit.SECONDS)
+                .expireAfterAccess(10, TimeUnit.SECONDS)
                 //过期策略: 当数据达到指定时间没有被写, 这个数据就会被作为过期数据进行处理, 当没有数据或者读到过期的数据的时候只允许一个线程去更新数据,其他线程阻塞,等待更新完成在获取新的值
 //                .expireAfterWrite(30, TimeUnit.SECONDS)
                 //过期策略: 数据在指定时间没有被更新, 则为过期数据, 当有线程正在更新数据的时候, 访问的线程返回旧数据

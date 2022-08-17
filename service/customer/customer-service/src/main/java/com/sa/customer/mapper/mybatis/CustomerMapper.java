@@ -26,7 +26,7 @@ public interface CustomerMapper {
      * @param customerId 客户ID
      * @return 商品ID 列表
      */
-    List<ProductInstanceDTO> getProductListByProduct(Long customerId);
+    List<ProductInstanceDTO> getProductListByCustomerId(@Param("customerId")Long customerId);
 
     List<BatchTaskDTO> getTaskByStatus(@Param("status") Status status);
 

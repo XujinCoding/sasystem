@@ -69,8 +69,8 @@ public class CustomerController {
     @ApiOperation(value = "使用缓存根据customerId查询product列表")
     @RequestMapping(value = "by-customerId/{customerId}", method = RequestMethod.GET)
     public List<ProductInstanceDTO> findProductByCustomerId(@PathVariable Long customerId) {
-        List<ProductInstanceDTO> productIdList = customerService.getProductListByProduct(customerId);
-        productIdList.forEach(instanceDTO -> {
+        List<ProductInstanceDTO> productInstanceList = customerService.getProductListByCustomerId(customerId);
+        productInstanceList.forEach(instanceDTO -> {
             try {
                 ProductDTO productDTO = products.get(instanceDTO.getProductId());
                 instanceDTO.setProduct(productDTO);
@@ -78,8 +78,7 @@ public class CustomerController {
                 throw new RuntimeException(e);
             }
         });
-        System.out.println(productIdList);
-        return productIdList;
+        return productInstanceList;
     }
 
     /**
@@ -87,14 +86,12 @@ public class CustomerController {
      *
      * @param customerId 客户ID
      */
-    @ResponseBody
-    @ApiOperation(value = "直接从数据库中获取商品列表信息")
-    @RequestMapping(value = "getProduct/{customerId}", method = RequestMethod.GET)
-    public List<ProductInstanceDTO> findProductInstanceByCustomerId(@PathVariable Long customerId) {
-        List<ProductInstanceDTO> list = customerService.findOfferByCustomerId(customerId);
-        System.out.println(list);
-        return list;
-    }
+//    @ResponseBody
+//    @ApiOperation(value = "直接从数据库中获取商品列表信息")
+//    @RequestMapping(value = "getProduct/{customerId}", method = RequestMethod.GET)
+//    public List<ProductInstanceDTO> findProductInstanceByCustomerId(@PathVariable Long customerId) {
+//        return customerService.findOfferByCustomerId(customerId);
+//    }
 
     /**
      * 根据商品Id查询商品

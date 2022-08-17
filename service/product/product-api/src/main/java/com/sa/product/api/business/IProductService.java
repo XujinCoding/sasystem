@@ -40,7 +40,7 @@ public interface IProductService {
      * @return 商品
      */
     @GET
-    @Path("/find-by-Id/{productId : \\d+}")
+    @Path("/find-by-Id/{productId}")
     ProductDTO findById(@PathParam("productId") Long productId);
 
     /**

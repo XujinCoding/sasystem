@@ -28,7 +28,7 @@ public class Swagger2CustomerConfiguration {
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
                 .title("SaSystem的接口文档")
-                .description("productController相关接口的文档")
+                .description("CustomerController相关接口的文档")
                 .termsOfServiceUrl("https://www.baidu.com/")
                 .version("1.0")
                 .build();

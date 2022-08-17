@@ -37,7 +37,7 @@ public interface ICustomerService {
      */
     @GET
     @Path("/getProductList/{customerId}")
-    List<ProductInstanceDTO> getProductListByProduct(@PathParam("customerId") Long customerId);
+    List<ProductInstanceDTO> getProductListByCustomerId(@PathParam("customerId") Long customerId);
 
     @POST
     @Path("/asynchronouslyAddCustomer")

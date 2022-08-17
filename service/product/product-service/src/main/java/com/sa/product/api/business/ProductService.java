@@ -13,6 +13,7 @@ import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,8 @@ public class ProductService implements IProductService {
         Product product = OrikaMapperUtils.getOrikaMapperFaceCode().map(productDTO, Product.class);
         //去数据库中查询商品, 看是否存在这个商品
         Product findProduct = productMapper.getProductById(product.getProductId());
+        //TODO:-------null字段映射
+
         //如果存在这个商品,就去修改商品的属性
         if (findProduct != null) {
             Product productResult = productRepository.save(product);
@@ -145,11 +148,12 @@ public class ProductService implements IProductService {
                 return criteriaBuilder.and(list.toArray(pre));
             }
         };
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        orders.add(new Sort.Order(Sort.Direction.ASC,"productId"));
         if (Objects.isNull(condition.getPageNum()) || Objects.isNull(condition.getPageSize())){
-            productList = productRepository.findAll(specification);
-
+            productList = productRepository.findAll(specification,Sort.by(orders));
         }else{
-            PageRequest pageRequest = PageRequest.of(condition.getPageNum(), condition.getPageSize());
+            PageRequest pageRequest = PageRequest.of(condition.getPageNum(), condition.getPageSize(),Sort.by(orders));
             Page<Product> productS = productRepository.findAll(specification,pageRequest);
             productList = productS.getContent();
         }

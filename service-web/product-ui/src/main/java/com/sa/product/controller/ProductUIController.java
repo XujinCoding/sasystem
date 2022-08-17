@@ -3,20 +3,22 @@ package com.sa.product.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
+import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.sa.common.dto.PageResult;
-import com.sa.product.guava.cache.GuavaCache;
 import com.sa.common.listener.ExcelListener;
-import com.sa.product.dto.SystemDTO;
-import com.sa.common.dto.job.BatchTaskDTO;
-import com.sa.common.dto.job.Status;
 import com.sa.product.api.business.IProductService;
 import com.sa.product.conditon.ProductQueryCondition;
 import com.sa.product.dto.ProductDTO;
+import com.sa.product.dto.SystemDTO;
+import com.sa.product.guava.cache.GuavaCache;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -65,9 +67,16 @@ public class ProductUIController {
     @RequestMapping(value = "/findById",method = RequestMethod.GET)
     @ApiOperation(value = "根据ID 查询商品数据")
     public SystemDTO findById(@RequestParam("productId") Long productId) throws ExecutionException {
-        LoadingCache<Long, ProductDTO> cache = GuavaCache.getCache();
-        ProductDTO productDTO = cache.get(productId);
+        ProductDTO productDTO;
+        try {
+            LoadingCache<Long, ProductDTO> cache = GuavaCache.getCache();
+             productDTO = cache.get(productId);
+        }catch (CacheLoader.InvalidCacheLoadException e){
+            return  new SystemDTO(200,null,"查询数据为空");
+        }
         return  new SystemDTO(200,productDTO,"");
+
+
     }
 
 
@@ -102,6 +111,17 @@ public class ProductUIController {
     @RequestMapping(value = "/saveAll",method = RequestMethod.POST)
     @ApiOperation(value = "读取一个excel文件, 将数据映射称DTO存到数据库中")
      public SystemDTO saveAll(){
+        /**
+         * 工作薄: 一个 excel 文件就是一个工作薄
+         * 工作表: 一个工作薄中可以有多个工作表（sheet）
+         */
+        /**
+         * 构建一个工作簿
+         * pathName 要读的文件的路径
+         * head 文件中每一行数据要存储到实体的类型的 class
+         * readListener 读取监听，每读取一行内容，都会调用该对象的 invoke，在 invoke 可以操作使用读取到的数据
+         * sheet方法参数： 工作表的顺序号（从0开始）或者工作表的名字，不传默认为0
+         */
         //获取一个监听对象
         ExcelListener<ProductDTO> excelListener = new ExcelListener<>();
         //获取到一个工作簿对象
@@ -123,13 +143,12 @@ public class ProductUIController {
     }
 
 
-    @RequestMapping(value = "/submitTask",method = RequestMethod.POST)
-    @ApiOperation(value = "提交一个定时批量任务 不需要传递ID 和 state 由后台自动生成")
-    public SystemDTO submitTask(@RequestBody BatchTaskDTO batchTaskDTO){
-        batchTaskDTO.setState(Status.PREPARING);
-        System.out.println(batchTaskDTO);
-        return new SystemDTO(200,productService.submitTask(batchTaskDTO),"");
-    }
+//    @RequestMapping(value = "/submitTask",method = RequestMethod.POST)
+//    @ApiOperation(value = "提交一个定时批量任务 不需要传递ID 和 state 由后台自动生成")
+//    public SystemDTO submitTask(@RequestBody BatchTaskDTO batchTaskDTO){
+//        batchTaskDTO.setState(Status.PREPARING);
+//        return new SystemDTO(200,productService.submitTask(batchTaskDTO),"");
+//    }
 
 
     /**

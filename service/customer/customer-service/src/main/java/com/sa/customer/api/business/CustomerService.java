@@ -65,8 +65,8 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public List<ProductInstanceDTO> getProductListByProduct(Long customerId) {
-        return customerMapper.getProductListByProduct(customerId);
+    public List<ProductInstanceDTO> getProductListByCustomerId(Long customerId) {
+        return customerMapper.getProductListByCustomerId(customerId);
     }
 
     @Override

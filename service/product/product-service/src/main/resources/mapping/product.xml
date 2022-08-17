@@ -13,41 +13,41 @@
     </update>
 
     <select id="getAll" resultType="com.sa.product.domain.Product">
-        SELECT * FROM PRODUCT
-
+        SELECT * FROM PRODUCT order by PRODUCT_ID
     </select>
     <select id="getProductById" resultType="com.sa.product.domain.Product">
         select * from PRODUCT where PRODUCT_ID=#{productId}
     </select>
     <select id="findByParameters" resultType="com.sa.product.domain.Product">
-select * from(
-        select * from PRODUCT
-        <where>
-            <if test="productId!=null and productId!=''">
-                PRODUCT_ID=#{productId}
-            </if>
-            <if test="productName!=null and productName!=''">
-                and PRODUCT_NAME=#{productName}
-            </if>
-            <if test="productPrice!=null and productPrice!=''">
-                and PRODUCT_PRICE=#{productPrice}
-            </if>
-            <if test="productNum!=null and productNum!=''">
-                and PRODUCT_NUM=#{productNum}
-            </if>
-            <if test="productRemark!=null and productRemark!=''">
-                and PRODUCT_REMARK=#{productRemark}
-            </if>
-            <if test="pageNum!=null and pageSize!=null">
-                and rownum &lt;= #{pageNum}*#{pageSize}
-            </if>
-        </where>
-                 order by PRODUCT_ID
-        ) where
+-- 从1 开始
+        select pp.* from(
+            select p.*,ROWNUM rowno from PRODUCT p
+            <where>
+                <if test="productId!=null and productId!=''">
+                    PRODUCT_ID=#{productId}
+                </if>
+                <if test="productName!=null and productName!=''">
+                    and PRODUCT_NAME=#{productName}
+                </if>
+                <if test="productPrice!=null and productPrice!=''">
+                    and PRODUCT_PRICE=#{productPrice}
+                </if>
+                <if test="productNum!=null and productNum!=''">
+                    and PRODUCT_NUM=#{productNum}
+                </if>
+                <if test="productRemark!=null and productRemark!=''">
+                    and PRODUCT_REMARK=#{productRemark}
+                </if>
+                <if test="pageNum!=null and pageSize!=null">
+                    and ROWNUM &lt;= ${pageNum * pageSize}
+                </if>
+            </where>
+            ORDER BY PRODUCT_ID
+            ) pp where
         <if test="pageNum!=null and pageSize!=null">
-            rownum >= (#{pageNum}-1)*#{pageSize}
+            rowno >= ${(pageNum-1) * pageSize+1}
         </if>
-
+        ORDER BY PRODUCT_ID
     </select>
 
     <select id="getTaskType" resultType="com.sa.common.dto.job.Type">

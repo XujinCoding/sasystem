@@ -5,7 +5,6 @@ import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.sa.product.domain.Product;
 
-import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,22 +19,24 @@ public class ExcelUtils {
      * @return  生成文件的位置
      */
     public static String templateExcel(String templatePath, List<?> list){
-        ParameterizedType type = (ParameterizedType) list.getClass().getGenericSuperclass();
-        String name = type.getActualTypeArguments()[0].toString();
-        System.out.println(name);
+//        ParameterizedType type = (ParameterizedType) list.getClass().getGenericSuperclass();
+//        String name = type.getActualTypeArguments()[0].toString();
+//        System.out.println(name);
 
         LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String format = localDateTime.format(formatter);
-        ExcelWriterBuilder excelWriterBuilder = EasyExcel.write(format+name+".xlsx", Product.class).withTemplate(templatePath);
+        ExcelWriterBuilder excelWriterBuilder = EasyExcel.write(format+".xlsx", Product.class).withTemplate(templatePath);
         ExcelWriterSheetBuilder sheet = excelWriterBuilder.sheet();
         sheet.doFill(list);
-        return format+name+".xlsx";
+        return format+".xlsx";
     }
 
     public static void main(String[] args) {
         ArrayList<Product> products = new ArrayList<>();
         products.add(new Product(100L, "12", 123, 123, ""));
+        products.add(new Product(101L, "12", 123, 123, ""));
+        products.add(new Product(102L, "12", 123, 123, ""));
 
         templateExcel("fill_template.xlsx",products);
     }

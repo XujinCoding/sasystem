@@ -14,7 +14,7 @@
         FROM PRODUCT JOIN PRODUCT_CUSTOMER_REL OPC on PRODUCT.PRODUCT_ID = OPC.PRODUCT_ID
         WHERE CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
     </select>
-    <select id="getProductListByProduct" resultType="com.sa.customer.dto.ProductInstanceDTO">
+    <select id="getProductListByCustomerId" resultType="com.sa.customer.dto.ProductInstanceDTO">
         select PRODUCT_ID,CUSTOMER_ID,CREATE_TIME from PRODUCT_CUSTOMER_REL where CUSTOMER_ID=#{customerId,jdbcType=NUMERIC}
     </select>
     <select id="getTaskByStatus" resultType="com.sa.common.dto.job.BatchTaskDTO">
