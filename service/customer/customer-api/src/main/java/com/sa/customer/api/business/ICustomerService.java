@@ -39,9 +39,20 @@ public interface ICustomerService {
     @Path("/getProductList/{customerId}")
     List<ProductInstanceDTO> getProductListByCustomerId(@PathParam("customerId") Long customerId);
 
+    /**
+     * 异步添加客户
+     * @param batchTaskDTO 任务
+     * @return 添加成功的任务
+     */
     @POST
     @Path("/asynchronouslyAddCustomer")
     BatchTaskDTO createAsynchronouslyTask(@RequestBody BatchTaskDTO batchTaskDTO);
+
+    /**
+     * 通过状态获取任务
+     * @param status
+     * @return
+     */
     @POST
     @Path("/getAllTaskByCustomerModel")
     List<BatchTaskDTO> getTaskByStatus(Status status);

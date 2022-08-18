@@ -70,14 +70,12 @@ public class ProductUIController {
         ProductDTO productDTO;
         try {
             LoadingCache<Long, ProductDTO> cache = GuavaCache.getCache();
-             productDTO = cache.get(productId);
+            productDTO = cache.get(productId);
         }catch (CacheLoader.InvalidCacheLoadException e){
             return  new SystemDTO(200,null,"查询数据为空");
         }
         return  new SystemDTO(200,productDTO,"");
-
-
-    }
+}
 
 
     /**

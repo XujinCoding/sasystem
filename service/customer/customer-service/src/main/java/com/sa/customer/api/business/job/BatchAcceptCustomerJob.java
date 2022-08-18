@@ -78,15 +78,20 @@ public class BatchAcceptCustomerJob {
                 Long taskId = task.getTaskId();
                 Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.SUCCESS, taskId);
                 Integer fail = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.FAILURE, taskId);
-                batchTaskRepository.setSuccessAndFailNum(taskId, success, fail);
                 Integer total = batchTaskRepository.findTotalByTaskId(taskId);
                 //如果成功数 + 失败数 = 总数 ,代表所有数据处理成功, 将任务设置为已完成
                 if (success + fail >= total) {
+                    //TODO------------------------------- xxlJOb
+                    batchTaskRepository.setSuccessAndFailNum(taskId, success, fail);
+
                     batchTaskRepository.changeTaskStatus(taskId, Status.SUCCESS.ordinal());
 
                     //将当前任务的data设置为null
                     batchTaskRepository.setDataOkByTaskId(taskId);
+                }else{
+                    batchTaskRepository.setSuccessAndFailNum(taskId, success, fail);
                 }
+                //TODO closeable------  redisson自动关闭
                 fairLock.unlock();
                 log.info("-----------------updateTaskStatusAndNums解锁" + fairLock.getName());
             }
@@ -95,6 +100,7 @@ public class BatchAcceptCustomerJob {
 
     public void doTaskItem() {
         //查询所有的未处理的customer任务, 并且按照级别进行排序
+        //线程池
         List<BatchTask> taskLists = batchTaskRepository.getByStateOrderByTaskLevelDescTaskIdAsc(Status.PREPARING);
         //将数据转换成DTO
         List<BatchTaskDTO> taskList = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(taskLists, BatchTaskDTO.class);
@@ -203,6 +209,7 @@ public class BatchAcceptCustomerJob {
         detail.setCustomerHome(customerHome);
         detail.setCustomerName(customerName);
         //判断这个明细在任务表中是否存在, 如果存在则不需要入库, 如果不存在就入库
+        //TODO-------------------------
         List<BatchTaskItem> byCustomerAgeAndCustomerNameAndCustomerHome = batchTaskItemRepository.getByCustomerAgeAndCustomerNameAndCustomerHome(customerAge, customerName, customerHome);
         if (byCustomerAgeAndCustomerNameAndCustomerHome.size() == 0)
             insertItemTable(detail);
@@ -218,6 +225,7 @@ public class BatchAcceptCustomerJob {
         try {
             tryLock = rLock.tryLock(0, -1, unit);
         } catch (InterruptedException e) {
+            log.error("",e);
             return false;
         }
         return tryLock;

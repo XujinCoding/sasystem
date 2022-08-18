@@ -161,7 +161,6 @@ public class ProductService implements IProductService {
         pageResult.setPageNum(condition.getPageNum());
         pageResult.setPageSize(condition.getPageSize());
         pageResult.setData(list);
-
         return pageResult;
     }
 
