@@ -7,7 +7,7 @@ spring:
     username: SA_DB
     password: xujin
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@localhost:1721:xe
+    url: jdbc:oracle:thin:@192.168.20.56:1521/ORACLEPDB
     type: com.alibaba.druid.pool.DruidDataSource
     # 此处需要使用配置文件将配置注入
     initialSize: 5 # 初始化数量

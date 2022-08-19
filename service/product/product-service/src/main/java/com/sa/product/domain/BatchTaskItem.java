@@ -20,8 +20,8 @@ import java.util.Objects;
 @Entity
 public class BatchTaskItem {
     @Id
-    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "TASK_DETAIL",allocationSize = 1)//自定义的自增策略
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "TASK_DETAIL")//设置主键自增
+    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "SEQ_BATCH_TASK_ITEM",allocationSize = 1)//自定义的自增策略
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_BATCH_TASK_ITEM")//设置主键自增
     private Long id;
 
     @Column(name = "TASK_ID")

@@ -11,17 +11,20 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ *
+ * @author starttimesxj
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @Table(name = "BATCH_TASK_ITEM")
-//@Component
 @Entity
 public class BatchTaskItem {
     @Id
-    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "TASK_DETAIL",allocationSize = 1)//自定义的自增策略
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "TASK_DETAIL")//设置主键自增
+    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "SEQ_BATCH_TASK_ITEM",allocationSize = 1)//自定义的自增策略
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_BATCH_TASK_ITEM")//设置主键自增
     private Long id;
 
     @Column(name = "TASK_ID")
@@ -57,8 +60,12 @@ public class BatchTaskItem {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
         BatchTaskItem that = (BatchTaskItem) o;
         return id != null && Objects.equals(id, that.id);
     }

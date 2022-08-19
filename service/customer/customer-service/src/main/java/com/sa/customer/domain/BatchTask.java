@@ -14,6 +14,7 @@ import javax.persistence.*;
 
 /**
  * 对应数据库中的任务表, 并和BatchAddCustomerDTO进行映射
+ * @author starttimesxj
  */
 @Getter
 @Setter
@@ -24,8 +25,8 @@ import javax.persistence.*;
 @Component
 public class BatchTask {
     @Id
-    @SequenceGenerator(name = "TASK_ID_GENERATOR",sequenceName = "TASK_SEQ",allocationSize = 1)//自定义的自增策略
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "TASK_SEQ")//设置主键自增
+    @SequenceGenerator(name = "TASK_ID_GENERATOR",sequenceName = "SEQ_BATCH_TASK",allocationSize = 1)//自定义的自增策略
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_BATCH_TASK")//设置主键自增
 
     @Column(name = "TASK_ID")
     private Long taskId;

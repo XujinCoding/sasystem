@@ -18,8 +18,8 @@ import javax.persistence.*;
 @Table(name = "CUSTOMER")
 public class Customer {
     @Id
-    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "CUSTOMER_ID_SEQ",allocationSize = 1)//自定义的自增策略
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "CUSTOMER_ID_SEQ")//设置主键自增
+    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "SEQ_CUSTOMER",allocationSize = 1)//自定义的自增策略
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_CUSTOMER")//设置主键自增
     private Long customerId;
     @Column(name = "CUSTOMER_NAME")
     private String customerName;
