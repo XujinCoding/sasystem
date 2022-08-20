@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import javax.persistence.*;
 @Table(name = "BATCH_TASK")
 @Entity
 @Component
+@Accessors(chain = true)
 public class BatchTask {
     @Id
     @SequenceGenerator(name = "TASK_ID_GENERATOR",sequenceName = "SEQ_BATCH_TASK",allocationSize = 1)//自定义的自增策略
@@ -36,6 +38,16 @@ public class BatchTask {
     private String data;
     @Column(name = "STATE")
     private Status state;
+
+    @Column(name = "TOTAL")
+    private Integer total;
+
+    @Column(name = "SUCCESS_NUM")
+    private Integer successNum;
+
+    @Column(name = "FAIL_NUM")
+    private Integer failNum;
+
     @Column(name = "TASK_LEVEL")
     @Enumerated
     private TaskLevel taskLevel;

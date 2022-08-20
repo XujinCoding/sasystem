@@ -57,6 +57,14 @@ public class BatchTaskItem {
     @Column(name = "PRODUCT_REMARK")
     private String productRemark;
 
+    public BatchTaskItem(Long taskId, Status state, String msg, String customerName, Integer customerAge, String customerHome) {
+        this.taskId = taskId;
+        this.state = state;
+        this.msg = msg;
+        this.customerName = customerName;
+        this.customerAge = customerAge;
+        this.customerHome = customerHome;
+    }
 
     @Override
     public boolean equals(Object o) {

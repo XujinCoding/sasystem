@@ -13,18 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * @author starttimesxj
+ */
 @Repository
 public interface BatchTaskRepository extends JpaRepository<BatchTask,Long>, JpaSpecificationExecutor<BatchTask> {
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE BATCH_TASK set STATE=:status where TASK_ID=:taskId",nativeQuery = true)
-    void changeTaskStatus(@Param("taskId")Long taskId, @Param("status") Integer status);
 
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE BATCH_TASK set TOTAL=:total where TASK_ID=:taskId",nativeQuery = true)
-    void setTaskTotal(@Param("taskId")Long taskId, @Param("total")Integer total);
+    @Query(value = "UPDATE BATCH_TASK set SA_DB.BATCH_TASK.STATE=:status,SA_DB.BATCH_TASK.TOTAL=:total where TASK_ID=:taskId",nativeQuery = true)
+    void modifyTaskStatusAndTotal( @Param("taskId")Long taskId, @Param("status")Integer status, @Param("total")Integer total);
+
+
 
 
     @Modifying
