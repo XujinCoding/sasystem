@@ -139,37 +139,5 @@ public class ProductUIController {
         return new SystemDTO(200,productDTOS,"成功");
 
     }
-
-
-//    @RequestMapping(value = "/submitTask",method = RequestMethod.POST)
-//    @ApiOperation(value = "提交一个定时批量任务 不需要传递ID 和 state 由后台自动生成")
-//    public SystemDTO submitTask(@RequestBody BatchTaskDTO batchTaskDTO){
-//        batchTaskDTO.setState(Status.PREPARING);
-//        return new SystemDTO(200,productService.submitTask(batchTaskDTO),"");
-//    }
-
-
-    /**
-     * 根据所有的字段查询条件
-     * 使用这种方式传递参数的时候, 必须每一个参数都有值, 不能为null , 也不能为 "" 空串, 不符合复杂查询的需求, 弃用!!!!!!!!!!!!!!!!!!
-     * @param productDTO 所有的参数
-     * @return 包含商品信息的SystemDTO
-     */
-//    @RequestMapping(value = "/findByParameters",method = RequestMethod.GET)
-//    @ApiOperation(value = "根据所有的字段查询条件")
-//    public SystemDTO findByParameters(ProductQueryCondition productDTO) throws ExecutionException {
-//        List<ProductDTO> byParameters = productService.findByParameters(
-//                productDTO.getProductId(),
-//                productDTO.getProductName(),
-//                productDTO.getProductPrice(),
-//                productDTO.getProductNum(),
-//                productDTO.getProductRemark()
-//        );
-////        List<ProductDTO> byParameters = productService.findByParameters(productDTO);
-//
-//        return  new SystemDTO(200,byParameters,"");
-//    }
-
-
 }
 

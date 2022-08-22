@@ -1,4 +1,4 @@
-package com.sa.customer.mapper.jpa;
+package com.sa.customer.dao.jpa;
 
 import com.sa.common.dto.job.Status;
 import com.sa.customer.domain.BatchTaskItem;

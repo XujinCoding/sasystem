@@ -1,4 +1,4 @@
-package com.sa.product.mapper;
+package com.sa.product.dao;
 
 import com.sa.product.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;

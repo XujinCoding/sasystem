@@ -1,4 +1,4 @@
-package com.sa.customer.mapper.mybatis;
+package com.sa.customer.dao.mybatis;
 
 import com.sa.customer.domain.ProductInstance;
 import com.sa.customer.dto.ProductInstanceDTO;

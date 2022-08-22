@@ -66,28 +66,6 @@ public interface IProductService {
 
 
 
-    /**
-     * 根据前端填写的信息,查询值返回
-     * 弃用原因见controller
-     * 我什么使用post 因为jersey报错, get请求不能消耗一个实体
-     *
-     * @param productId     商品Id
-     * @param productName   商品名
-     * @param productPrice  商品价格
-     * @param productNum    商品数量
-     * @param productRemark 商品备注
-     * @return 查询结果
-     */
-//    @GET
-//    @Path("/find-by-parameters/{productId}/{productName}/{productPrice}/{productNum}/{productRemark}")
-//    List<ProductDTO> findByParameters(@PathParam("productId") Long productId,
-//                                      @PathParam("productName") String productName,
-//                                      @PathParam("productPrice") Integer productPrice,
-//                                      @PathParam("productNum") Integer productNum,
-//                                      @PathParam("productRemark") String productRemark);
-
-
-
     @POST
     @Path("find-by-parameters-useJPA")
     PageResult findByParametersUseJPA(ProductQueryCondition condition);

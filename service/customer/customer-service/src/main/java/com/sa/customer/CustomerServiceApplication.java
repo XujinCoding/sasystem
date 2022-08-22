@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@MapperScan("com.sa.customer.mapper.mybatis")
+@MapperScan("com.sa.customer.dao.mybatis")
 @EnableScheduling
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)

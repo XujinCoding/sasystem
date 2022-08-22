@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sa.product.mapper.mybaits.ProductMapper">
+<mapper namespace="com.sa.product.dao.mybaits.ProductMapper">
 
 
     <update id="changeTaskState">
@@ -76,19 +76,6 @@
     <select id="getSuccessNumber" resultType="java.lang.Integer">
         select COUNT(*) from BATCH_TASK_ITEM where TASK_ID=#{taskId,jdbcType=NUMERIC} and STATE=1
     </select>
-
-    <select id="getNotRunningTask" resultType="com.sa.product.domain.BatchTask">
-        select TASK_ID,TYPE,DATA from BATCH_TASK where STATE=0
-    </select>
-    <select id="getRunningTask" resultType="com.sa.product.domain.BatchTask">
-        select TASK_ID,DATA
-        from BATCH_TASK
-        where STATE=2
-    </select>
-    <select id="getAllTasking" resultType="com.sa.product.domain.BatchTaskItem">
-        select * from BATCH_TASK_ITEM where STATE=0
-    </select>
-
     <update id="changeTaskTableState">
         update BATCH_TASK set STATE = #{state,jdbcType=NUMERIC} where TASK_ID=#{taskId,jdbcType=NUMERIC}
     </update>

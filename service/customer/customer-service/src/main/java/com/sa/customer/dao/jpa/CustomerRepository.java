@@ -1,4 +1,4 @@
-package com.sa.customer.mapper.jpa;
+package com.sa.customer.dao.jpa;
 
 import com.sa.customer.domain.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;

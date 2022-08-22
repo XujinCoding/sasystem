@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
-@MapperScan("com.sa.product.mapper.mybaits")
+@SpringBootApplication(scanBasePackages = "com.sa")
+@MapperScan("com.sa.product.dao.mybaits")
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = false,exposeProxy = true)
 //@EnableFeignClients

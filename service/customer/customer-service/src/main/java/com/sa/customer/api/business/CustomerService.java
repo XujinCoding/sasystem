@@ -9,8 +9,8 @@ import com.sa.customer.domain.Customer;
 import com.sa.customer.domain.ProductInstance;
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
-import com.sa.customer.mapper.jpa.BatchTaskRepository;
-import com.sa.customer.mapper.mybatis.CustomerMapper;
+import com.sa.customer.dao.jpa.BatchTaskRepository;
+import com.sa.customer.dao.mybatis.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
-@Service("customerService")
+@Service
 public class CustomerService implements ICustomerService {
 
     @Autowired

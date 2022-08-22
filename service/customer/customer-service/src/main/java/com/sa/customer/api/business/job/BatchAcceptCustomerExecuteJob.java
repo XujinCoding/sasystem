@@ -4,10 +4,9 @@ import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.Type;
 import com.sa.customer.domain.BatchTaskItem;
 import com.sa.customer.domain.Customer;
-import com.sa.customer.mapper.jpa.BatchTaskItemRepository;
-import com.sa.customer.mapper.jpa.BatchTaskRepository;
-import com.sa.customer.mapper.jpa.CustomerRepository;
-import com.sa.customer.mapper.mybatis.CustomerMapper;
+import com.sa.customer.dao.jpa.BatchTaskItemRepository;
+import com.sa.customer.dao.jpa.BatchTaskRepository;
+import com.sa.customer.dao.jpa.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +32,6 @@ import java.util.concurrent.TimeUnit;
 public class BatchAcceptCustomerExecuteJob {
     private static final String PRI_KEY = "BATCH_ACCEPT_CUSTOMER";
 
-    @Autowired
-    private CustomerMapper customerMapper;
 
     @Autowired
     private BatchTaskItemRepository batchTaskItemRepository;

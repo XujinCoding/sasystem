@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sa.customer.mapper.mybatis.CustomerMapper">
+<mapper namespace="com.sa.customer.dao.mybatis.CustomerMapper">
     <insert id="buyProduct">
         insert into PRODUCT_CUSTOMER_REL(CUSTOMER_ID,PRODUCT_ID,CREATE_TIME) values (#{customerId,jdbcType=NUMERIC},#{productId,jdbcType=NUMERIC},#{createTime,jdbcType=DATE})
     </insert>

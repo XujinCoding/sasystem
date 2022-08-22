@@ -1,12 +1,10 @@
-package com.sa.product.mapper.mybaits;
+package com.sa.product.dao.mybaits;
 
 
 import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.Type;
 import com.sa.product.conditon.ProductQueryCondition;
-import com.sa.product.domain.BatchTask;
-import com.sa.product.domain.BatchTaskItem;
 import com.sa.product.domain.Product;
 import org.apache.ibatis.annotations.Param;
 
@@ -45,11 +43,8 @@ public interface ProductMapper {
 
     void setItemStatus(@Param("taskId") Long taskId, @Param("status") Integer status, @Param("msg") String msg);
 
-    void addItem(BatchTaskItem batchTaskItem);
 
-    List<BatchTaskItem> getAllTasking();
 
-    List<BatchTask> getNotRunningTask();
 
-    List<BatchTask> getRunningTask();
+
 }

@@ -3,12 +3,13 @@ package com.sa.product.api.business;
 
 import com.sa.common.dto.PageResult;
 import com.sa.common.dto.job.BatchTaskDTO;
+import com.sa.common.mapper.BeanMapper;
 import com.sa.common.utils.OrikaMapperUtils;
 import com.sa.product.conditon.ProductQueryCondition;
 import com.sa.product.domain.Product;
 import com.sa.product.dto.ProductDTO;
-import com.sa.product.mapper.ProductRepository;
-import com.sa.product.mapper.mybaits.ProductMapper;
+import com.sa.product.dao.ProductRepository;
+import com.sa.product.dao.mybaits.ProductMapper;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,10 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Service("productService")
+@Service
 public class ProductService implements IProductService {
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private BeanMapper beanMapper;
 
     @Autowired
     private ProductRepository productRepository;
@@ -46,7 +50,8 @@ public class ProductService implements IProductService {
 //        System.out.println(result);
 
         //使用Orika复制工具
-        return  OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all, ProductDTO.class);
+        return beanMapper.mapAsList(all, ProductDTO.class);
+//        return  OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all, ProductDTO.class);
     }
 
     /**
