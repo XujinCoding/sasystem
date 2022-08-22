@@ -43,10 +43,12 @@
                 </if>
             </where>
             ORDER BY PRODUCT_ID
-            ) pp where
-        <if test="pageNum!=null and pageSize!=null">
-            rowno >= ${(pageNum-1) * pageSize+1}
-        </if>
+            ) pp
+            <where>
+                <if test="pageNum!=null and pageSize!=null">
+                    rowno >= ${(pageNum-1) * pageSize+1}
+                </if>
+            </where>
         ORDER BY PRODUCT_ID
     </select>
 

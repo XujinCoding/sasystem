@@ -2,14 +2,12 @@ package com.sa.product.api.business;
 
 
 import com.sa.common.dto.PageResult;
-import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.common.mapper.BeanMapper;
-import com.sa.common.utils.OrikaMapperUtils;
 import com.sa.product.conditon.ProductQueryCondition;
-import com.sa.product.domain.Product;
-import com.sa.product.dto.ProductDTO;
 import com.sa.product.dao.ProductRepository;
 import com.sa.product.dao.mybaits.ProductMapper;
+import com.sa.product.domain.Product;
+import com.sa.product.dto.ProductDTO;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -51,6 +49,7 @@ public class ProductService implements IProductService {
 
         //使用Orika复制工具
         return beanMapper.mapAsList(all, ProductDTO.class);
+
 //        return  OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all, ProductDTO.class);
     }
 
@@ -61,12 +60,12 @@ public class ProductService implements IProductService {
      */
     public  List<ProductDTO>findAllByFunction(){
         List<Product> all1 = productRepository.findAll();
-        return OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all1, ProductDTO.class);
+        return beanMapper.mapAsList(all1, ProductDTO.class);
     }
 
     public ProductDTO findById(Long productId) {
         Product product = productRepository.findByProductId(productId);
-        return OrikaMapperUtils.getOrikaMapperFaceCode().map(product, ProductDTO.class);
+        return beanMapper.map(product, ProductDTO.class);
     }
 
 //        //使用JPA方法编写规范编写的方法
@@ -88,7 +87,7 @@ public class ProductService implements IProductService {
     @Override
     public ProductDTO update(ProductDTO productDTO) {
         Assert.notNull(productDTO);
-        Product product = OrikaMapperUtils.getOrikaMapperFaceCode().map(productDTO, Product.class);
+        Product product = beanMapper.map(productDTO, Product.class);
         //去数据库中查询商品, 看是否存在这个商品
         Product findProduct = productMapper.getProductById(product.getProductId());
         //TODO:-------null字段映射
@@ -97,23 +96,23 @@ public class ProductService implements IProductService {
         if (findProduct != null) {
             Product productResult = productRepository.save(product);
             //返回修改之后的数据
-            return OrikaMapperUtils.getOrikaMapperFaceCode().map(productResult, ProductDTO.class);
+            return beanMapper.map(productResult, ProductDTO.class);
         }
         //如果数据库中没有这个商品就返回null 让控制器去判断.
         return null;
     }
     @Override
     public List<ProductDTO> saveAll(List<ProductDTO> data){
-        List<Product> list = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(data, Product.class);
+        List<Product> list = beanMapper.mapAsList(data, Product.class);
         List<Product> listMid = productRepository.saveAll(list);
-        return OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
+        return beanMapper.mapAsList(listMid, ProductDTO.class);
     }
 
     @Override
     public PageResult findByParameters(ProductQueryCondition condition){
         PageResult pageResult = new PageResult();
         List<Product> listMid = productMapper.findByParameters(condition);
-        List<ProductDTO> listReturn = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(listMid, ProductDTO.class);
+        List<ProductDTO> listReturn = beanMapper.mapAsList(listMid, ProductDTO.class);
         pageResult.setPageNum(condition.getPageNum());
         pageResult.setPageSize(condition.getPageSize());
         pageResult.setData(listReturn);
@@ -162,25 +161,12 @@ public class ProductService implements IProductService {
             Page<Product> productS = productRepository.findAll(specification,pageRequest);
             productList = productS.getContent();
         }
-        List<ProductDTO> list = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(productList, ProductDTO.class);
+        List<ProductDTO> list = beanMapper.mapAsList(productList, ProductDTO.class);
         pageResult.setPageNum(condition.getPageNum());
         pageResult.setPageSize(condition.getPageSize());
         pageResult.setData(list);
         return pageResult;
     }
-
-    /**
-     * 前端提交任务之后将任务入库
-     * @param batchTaskDTO 定时任务的DTO
-     * @return
-     */
-
-    @Override
-    public boolean submitTask(BatchTaskDTO batchTaskDTO) {
-        productMapper.submitTask(batchTaskDTO);
-        return true;
-    }
-
 
 
 }

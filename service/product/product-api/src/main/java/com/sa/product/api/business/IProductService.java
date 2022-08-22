@@ -1,9 +1,8 @@
 package com.sa.product.api.business;
 
+import com.sa.common.dto.PageResult;
 import com.sa.product.conditon.ProductQueryCondition;
 import com.sa.product.dto.ProductDTO;
-import com.sa.common.dto.PageResult;
-import com.sa.common.dto.job.BatchTaskDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 
 import javax.ws.rs.*;
@@ -70,12 +69,4 @@ public interface IProductService {
     @Path("find-by-parameters-useJPA")
     PageResult findByParametersUseJPA(ProductQueryCondition condition);
 
-    /**
-     * 提交批量定时任务并不去处理
-     * @param batchTaskDTO 定时任务的DTO
-     * @return 创建的定时任务
-     */
-    @POST
-    @Path("submit_task")
-    boolean submitTask(BatchTaskDTO batchTaskDTO);
 }

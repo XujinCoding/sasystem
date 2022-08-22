@@ -43,7 +43,9 @@ public class ProductUIController {
     @RequestMapping(value = "/getAll",method = RequestMethod.GET)
     @ApiOperation(value = "获取所有的Product")
     public SystemDTO getAll() {
-      return new SystemDTO(200,productService.getAll(),"");
+      return new SystemDTO(200,
+              productService.getAll(),
+              "");
     }
 
     /**

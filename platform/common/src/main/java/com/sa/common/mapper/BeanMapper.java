@@ -75,9 +75,11 @@ public class BeanMapper extends ConfigurableMapper implements ApplicationContext
                 builder.field(key,fieldMap.get(key));
             });
         }
+
         //将映射字段注册到MapperFactory中
         builder.byDefault()
-//                .customize((Mapper)mapper)
+                .mapNulls(false).mapNullsInReverse(false)
+                .customize((Mapper)mapper)
                 .register();
     }
 

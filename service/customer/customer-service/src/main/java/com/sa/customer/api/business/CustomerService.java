@@ -3,14 +3,14 @@ package com.sa.customer.api.business;
 import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.TaskLevel;
-import com.sa.common.utils.OrikaMapperUtils;
+import com.sa.common.mapper.BeanMapper;
+import com.sa.customer.dao.jpa.BatchTaskRepository;
+import com.sa.customer.dao.mybatis.CustomerMapper;
 import com.sa.customer.domain.BatchTask;
 import com.sa.customer.domain.Customer;
 import com.sa.customer.domain.ProductInstance;
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
-import com.sa.customer.dao.jpa.BatchTaskRepository;
-import com.sa.customer.dao.mybatis.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,9 @@ public class CustomerService implements ICustomerService {
     private CustomerMapper customerMapper;
 
     @Autowired
+    BeanMapper beanMapper;
+
+    @Autowired
     private BatchTaskRepository batchTaskRepository;
 
 
@@ -36,7 +39,7 @@ public class CustomerService implements ICustomerService {
     @Override
     public CustomerDTO findById(Long customerId) {
         Customer customer = customerMapper.findById(customerId);
-        return OrikaMapperUtils.getOrikaMapperFaceCode().map(customer, CustomerDTO.class);
+        return beanMapper.map(customer, CustomerDTO.class);
     }
 
     /**
@@ -46,7 +49,7 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public List<ProductInstanceDTO> buyProduct(List<ProductInstanceDTO> list) {
-        List<ProductInstance> productInstances = OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(list, ProductInstance.class);
+        List<ProductInstance> productInstances = beanMapper.mapAsList(list, ProductInstance.class);
         productInstances.forEach((instant)->{
             instant.setCreateTime(ZonedDateTime.now());
             customerMapper.buyProduct(instant);
@@ -78,12 +81,12 @@ public class CustomerService implements ICustomerService {
     @Override
     public BatchTaskDTO createAsynchronouslyTask(BatchTaskDTO batchTaskDTO) {
         batchTaskDTO.setState(Status.PREPARING);
-        BatchTask map = OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTaskDTO, BatchTask.class);
+        BatchTask map = beanMapper.map(batchTaskDTO, BatchTask.class);
         if (Objects.isNull(map.getTaskLevel())){
             map.setTaskLevel(TaskLevel.DEFAULT);
         }
         BatchTask batchTask = batchTaskRepository.save(map);
 
-        return OrikaMapperUtils.getOrikaMapperFaceCode().map(batchTask, BatchTaskDTO.class);
+        return beanMapper.map(batchTask, BatchTaskDTO.class);
     }
 }

@@ -17,9 +17,8 @@ import javax.persistence.*;
 @Table(name = "PRODUCT")
 public class Product {
     @Id
-//    @SequenceGenerator(name = "PRODUCT_ID_GENERATOR",sequenceName = "SEQ_PRODUCT",allocationSize = 1)//自定义的自增策略
-//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_PRODUCT")//设置主键自增
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "PRODUCT_ID_GENERATOR",sequenceName = "SEQ_PRODUCT",allocationSize = 1)//自定义的自增策略
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_PRODUCT")//设置主键自增
     @Column(name = "PRODUCT_ID")
     @ExcelProperty(index = 0)
     private Long productId;
