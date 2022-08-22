@@ -28,6 +28,12 @@ spring:
         max-wait: -1ms
         max-idle: 8
         min-idle: 0
+  flyway:
+    enabled: true
+    encoding: utf-8
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    placeholders: {table_space: TBLBATCH_TASK, db_script_i18n: en}
 mybatis-plus:
   mapper-locations: classpath:mapping/*.xml
   configuration:

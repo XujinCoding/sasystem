@@ -1,0 +1,1 @@
+alter table SA_DB.BATCH_TASK modify (TASK_LEVEL  NUMBER(3));
