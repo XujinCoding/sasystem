@@ -19,14 +19,8 @@ public class ExcelUtils {
      * @return  生成文件的位置
      */
     public static String templateExcel(String templatePath, List<?> list){
-//        ParameterizedType type = (ParameterizedType) list.getClass().getGenericSuperclass();
-//        String name = type.getActualTypeArguments()[0].toString();
-//        System.out.println(name);
-
-        LocalDateTime localDateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String format = localDateTime.format(formatter);
-        ExcelWriterBuilder excelWriterBuilder = EasyExcel.write(format+".xlsx", Product.class).withTemplate(templatePath);
+        String format = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        ExcelWriterBuilder excelWriterBuilder = EasyExcel.write("Excel/"+format+".xlsx", Product.class).withTemplate(templatePath);
         ExcelWriterSheetBuilder sheet = excelWriterBuilder.sheet();
         sheet.doFill(list);
         return format+".xlsx";
@@ -38,7 +32,7 @@ public class ExcelUtils {
         products.add(new Product(101L, "12", 123, 123, ""));
         products.add(new Product(102L, "12", 123, 123, ""));
 
-        templateExcel("fill_template.xlsx",products);
+        templateExcel("Excel/"+"fill_template.xlsx",products);
     }
 //    public static String templateExcel(String templatePath, List<E> list,String dateTimeFormat){
 //        LocalDateTime localDateTime = LocalDateTime.now();

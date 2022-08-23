@@ -123,7 +123,7 @@ public class ProductUIController {
         //获取一个监听对象
         ExcelListener<ProductDTO> excelListener = new ExcelListener<>();
         //获取到一个工作簿对象
-        ExcelReaderBuilder read = EasyExcel.read("ProductDTO.xlsx", ProductDTO.class, excelListener);
+        ExcelReaderBuilder read = EasyExcel.read("Excel/ProductDTO.xlsx", ProductDTO.class, excelListener);
         //获得一个工作表对象
         ExcelReaderSheetBuilder sheet = read.sheet();
         //读取工作表的内容
