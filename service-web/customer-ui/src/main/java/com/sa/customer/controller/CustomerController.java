@@ -34,18 +34,14 @@ public class CustomerController {
     /**
      * 创建一个缓存对象
      */
-    LoadingCache<Long, ProductDTO> products = CacheBuilder.newBuilder()
-            .maximumSize(1000)
-            .expireAfterWrite(10, TimeUnit.SECONDS)
-            .build(
-                    new CacheLoader<Long, ProductDTO>() {
-                        @Override
-                        //用于指定参数,返回值不为空
-                        @Nonnull
-                        public ProductDTO load(@Nonnull Long key) {
-                            return productService.findById(key);
-                        }
-                    });
+    LoadingCache<Long, ProductDTO> products = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(10, TimeUnit.SECONDS).build(new CacheLoader<Long, ProductDTO>() {
+        @Override
+        //用于指定参数,返回值不为空
+        @Nonnull
+        public ProductDTO load(@Nonnull Long key) {
+            return productService.findById(key);
+        }
+    });
 
     /**
      * 用于测试两个服务之间的连通性, 获取所有的product
@@ -81,18 +77,6 @@ public class CustomerController {
     }
 
     /**
-     * 直接从数据库中获取商品列表信息
-     *
-     * @param customerId 客户ID
-     */
-//    @ResponseBody
-//    @ApiOperation(value = "直接从数据库中获取商品列表信息")
-//    @RequestMapping(value = "getProduct/{customerId}", method = RequestMethod.GET)
-//    public List<ProductInstanceDTO> findProductInstanceByCustomerId(@PathVariable Long customerId) {
-//        return customerService.findOfferByCustomerId(customerId);
-//    }
-
-    /**
      * 根据商品Id查询商品
      *
      * @param id 商品Id
@@ -116,7 +100,6 @@ public class CustomerController {
     public void buyProduct(@RequestBody List<ProductInstanceDTO> list) {
         customerService.buyProduct(list);
     }
-
 
     @ResponseBody
     @ApiOperation(value = "异步批量添加客户")
