@@ -34,15 +34,4 @@ public class ExcelUtils {
 
         templateExcel("Excel/"+"fill_template.xlsx",products);
     }
-//    public static String templateExcel(String templatePath, List<E> list,String dateTimeFormat){
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-//        String format = localDateTime.format(formatter);
-//
-//        ExcelWriterBuilder excelWriterBuilder = EasyExcel.write(format+"fill.xlsx", Product.class).withTemplate(templatePath);
-//
-//        ExcelWriterSheetBuilder sheet = excelWriterBuilder.sheet();
-//        List<Product> list = initData();
-//        sheet.doFill(list);
-//    }
 }
