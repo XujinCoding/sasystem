@@ -1,4 +1,4 @@
-package com.sa.customer.utils;
+package com.sa.common.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @Table(name = "BATCH_TASK_ITEM")
+@Accessors(chain = true)
 @Entity
 public class BatchTaskItem {
     @Id

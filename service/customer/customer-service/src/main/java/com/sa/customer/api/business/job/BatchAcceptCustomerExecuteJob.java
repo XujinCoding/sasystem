@@ -80,7 +80,6 @@ public class BatchAcceptCustomerExecuteJob {
         });
     }
 
-    //TODO 一个一个去处理??????????????????   还是不用去处理
     private void addItemIntoCustomer(BatchTaskItem item) {
         Customer customer = new Customer();
         customer.setCustomerAge(item.getCustomerAge());

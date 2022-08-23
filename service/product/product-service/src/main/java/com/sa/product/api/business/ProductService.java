@@ -8,7 +8,6 @@ import com.sa.product.dao.ProductRepository;
 import com.sa.product.dao.mybaits.ProductMapper;
 import com.sa.product.domain.Product;
 import com.sa.product.dto.ProductDTO;
-import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,8 +35,6 @@ public class ProductService implements IProductService {
     private ProductRepository productRepository;
     @Override
     public List<ProductDTO> getAll() {
-        //使用MyBatis进行查询
-        List<Product> all = productMapper.getAll();
         //----------对象关系映射------------
 //        //将product 映射到productDTO中
 //        //普通方法
@@ -48,74 +45,37 @@ public class ProductService implements IProductService {
 //        System.out.println(result);
 
         //使用Orika复制工具
-        return beanMapper.mapAsList(all, ProductDTO.class);
-
-//        return  OrikaMapperUtils.getOrikaMapperFaceCode().mapAsList(all, ProductDTO.class);
-    }
-
-    /**
-     * 查询全部内容
-     * 使用JPA自带的方法进行查询
-     * @return 从数据库中查询的数据
-     */
-    public  List<ProductDTO>findAllByFunction(){
-        List<Product> all1 = productRepository.findAll();
-        return beanMapper.mapAsList(all1, ProductDTO.class);
+        return beanMapper.mapAsList(productMapper.getAll(), ProductDTO.class);
     }
 
     public ProductDTO findById(Long productId) {
-        Product product = productRepository.findByProductId(productId);
-        return beanMapper.map(product, ProductDTO.class);
+        return beanMapper.map(productRepository.findByProductId(productId), ProductDTO.class);
     }
 
-//        //使用JPA方法编写规范编写的方法
-//        Product allByProductId = productRepository.findByProductId(1L);
-//        System.out.println(allByProductId.toString());
-//
-//
-//        //使用@Query(...)进行查询
-//        Product product1 = productRepository.getProduct1(1L);
-//        System.out.println(product1.toString());
-//
-//        分页查询
-//        PageRequest pageRequest = PageRequest.of(0, 3);
-//        Page<Product> all2 = productRepository.findAll(pageRequest);
-//        System.out.println("分页查询");
-//        all2.forEach((s)->{
-//            System.out.println(s.toString());
-//        });
     @Override
     public ProductDTO update(ProductDTO productDTO) {
-        Assert.notNull(productDTO);
-        Product product = beanMapper.map(productDTO, Product.class);
         //去数据库中查询商品, 看是否存在这个商品
-        Product findProduct = productMapper.getProductById(product.getProductId());
+        Product product = productMapper.getProductById(productDTO.getProductId());
         //TODO:-------null字段映射
-
-        //如果存在这个商品,就去修改商品的属性
-        if (findProduct != null) {
-            Product productResult = productRepository.save(product);
-            //返回修改之后的数据
-            return beanMapper.map(productResult, ProductDTO.class);
-        }
-        //如果数据库中没有这个商品就返回null 让控制器去判断.
-        return null;
+        product.setProductNum(product.getProductNum()==null?product.getProductNum(): productDTO.getProductNum());
+        product.setProductPrice(product.getProductPrice()==null?product.getProductPrice(): productDTO.getProductPrice());
+        product.setProductRemark(product.getProductRemark()==null?product.getProductRemark(): productDTO.getProductRemark());
+        product.setProductName(product.getProductName()==null?product.getProductName(): productDTO.getProductName());
+        return beanMapper.map( productRepository.save(product), ProductDTO.class);
     }
     @Override
     public List<ProductDTO> saveAll(List<ProductDTO> data){
         List<Product> list = beanMapper.mapAsList(data, Product.class);
-        List<Product> listMid = productRepository.saveAll(list);
-        return beanMapper.mapAsList(listMid, ProductDTO.class);
+        return beanMapper.mapAsList( productRepository.saveAll(list), ProductDTO.class);
     }
 
     @Override
     public PageResult findByParameters(ProductQueryCondition condition){
         PageResult pageResult = new PageResult();
-        List<Product> listMid = productMapper.findByParameters(condition);
-        List<ProductDTO> listReturn = beanMapper.mapAsList(listMid, ProductDTO.class);
-        pageResult.setPageNum(condition.getPageNum());
-        pageResult.setPageSize(condition.getPageSize());
-        pageResult.setData(listReturn);
+        List<ProductDTO> listReturn = beanMapper.mapAsList(productMapper.findByParameters(condition), ProductDTO.class);
+        pageResult.setPageNum(condition.getPageNum())
+                .setPageSize(condition.getPageSize())
+                .setData(listReturn);
         return pageResult;
     }
 

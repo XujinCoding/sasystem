@@ -66,9 +66,8 @@ public class BatchAcceptCustomerJob {
                     Long taskId = task.getTaskId();
                     Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.SUCCESS, taskId);
                     Integer fail = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.FAILURE, taskId);
-                    Integer total = batchTaskRepository.findTotalByTaskId(taskId);
                     //如果成功数 + 失败数 = 总数 ,代表所有数据处理成功, 将任务设置为已完成
-                    if (success + fail >= total) {
+                    if (success + fail >= task.getTotal()) {
                         task.setFailNum(fail).setSuccessNum(success).setData("ok").setState(Status.SUCCESS);
                         batchTaskRepository.save(task);
                     } else {
@@ -115,15 +114,15 @@ public class BatchAcceptCustomerJob {
     public Integer parseStringToTask(BatchTask batchTask) {
         String data = batchTask.getData();
         Long taskId = batchTask.getTaskId();
-        List<BatchTaskItem> allList = batchTaskItemRepository.findAllByTaskId(taskId);
+        List<String> customerNameList = batchTaskItemRepository.findAllByTaskId(taskId).stream().map(BatchTaskItem::getCustomerName).collect(Collectors.toList());
         //如果传进来的数据是空串就返回null
         if (StringUtils.isEmpty(data)) {
             return 0;
         }
         String[] customerArray = data.split(",");
         List<BatchTaskItem> list = Arrays.stream(customerArray)
-                .filter((cusName) -> !allList.contains(cusName))
-                .map(c -> new BatchTaskItem(taskId, Status.PREPARING, "化简逻辑", c, 22, "北京"))
+                .filter((cusName) -> !customerNameList.contains(cusName))
+                .map(c -> new BatchTaskItem().setTaskId(taskId).setCustomerName(c).setCustomerAge(22).setCustomerHome("北京"))
                 .collect(Collectors.toList());
         insertItemTOBatchTaskItem(list);
         return customerArray.length;
@@ -139,7 +138,6 @@ public class BatchAcceptCustomerJob {
 
     public void insertItemTable(BatchTaskItem detail) {
         BatchTaskItem save = batchTaskItemRepository.save(detail);
-        log.info("------save = " + save);
     }
 
     public Boolean tryLock(RLock rLock, TimeUnit unit) {
@@ -147,7 +145,7 @@ public class BatchAcceptCustomerJob {
         try {
             tryLock = rLock.tryLock(0, -1, unit);
         } catch (InterruptedException e) {
-            log.error("", e);
+            log.error("BatchAcceptCustomerJob:tryLock------------", e);
             return false;
         }
         return tryLock;

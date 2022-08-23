@@ -72,8 +72,7 @@ public class CustomerController {
         List<ProductInstanceDTO> productInstanceList = customerService.getProductListByCustomerId(customerId);
         productInstanceList.forEach(instanceDTO -> {
             try {
-                ProductDTO productDTO = products.get(instanceDTO.getProductId());
-                instanceDTO.setProduct(productDTO);
+                instanceDTO.setProduct(products.get(instanceDTO.getProductId()));
             } catch (ExecutionException e) {
                 throw new RuntimeException(e);
             }

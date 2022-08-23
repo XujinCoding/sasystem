@@ -1,6 +1,6 @@
 package com.sa.customer.api.business.job;
 
-import com.sa.customer.utils.SpringUtil;
+import com.sa.common.utils.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -13,8 +13,6 @@ import java.util.Objects;
  */
 @Slf4j
 public class RedisFairLock implements Closeable {
-
-
 
     public RedissonClient redissonClient = SpringUtil.getBean("redissonClient",RedissonClient.class);
 

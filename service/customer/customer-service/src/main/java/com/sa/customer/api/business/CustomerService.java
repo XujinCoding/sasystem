@@ -7,7 +7,6 @@ import com.sa.common.mapper.BeanMapper;
 import com.sa.customer.dao.jpa.BatchTaskRepository;
 import com.sa.customer.dao.mybatis.CustomerMapper;
 import com.sa.customer.domain.BatchTask;
-import com.sa.customer.domain.Customer;
 import com.sa.customer.domain.ProductInstance;
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
@@ -38,8 +37,7 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public CustomerDTO findById(Long customerId) {
-        Customer customer = customerMapper.findById(customerId);
-        return beanMapper.map(customer, CustomerDTO.class);
+        return beanMapper.map(customerMapper.findById(customerId), CustomerDTO.class);
     }
 
     /**
@@ -49,8 +47,7 @@ public class CustomerService implements ICustomerService {
      */
     @Override
     public List<ProductInstanceDTO> buyProduct(List<ProductInstanceDTO> list) {
-        List<ProductInstance> productInstances = beanMapper.mapAsList(list, ProductInstance.class);
-        productInstances.forEach((instant)->{
+        beanMapper.mapAsList(list, ProductInstance.class).forEach((instant)->{
             instant.setCreateTime(ZonedDateTime.now());
             customerMapper.buyProduct(instant);
         });
@@ -85,8 +82,6 @@ public class CustomerService implements ICustomerService {
         if (Objects.isNull(map.getTaskLevel())){
             map.setTaskLevel(TaskLevel.DEFAULT);
         }
-        BatchTask batchTask = batchTaskRepository.save(map);
-
-        return beanMapper.map(batchTask, BatchTaskDTO.class);
+        return beanMapper.map(batchTaskRepository.save(map), BatchTaskDTO.class);
     }
 }

@@ -89,9 +89,7 @@ public class ProductUIController {
     @RequestMapping(value = "/findByParameters",method = RequestMethod.GET)
     @ApiOperation(value = "根据所有的字段查询条件")
     public SystemDTO findByParameters(ProductQueryCondition condition) throws ExecutionException {
-        PageResult byParameters = productService.findByParameters(condition);
-
-        return  new SystemDTO(200,byParameters,"");
+        return  new SystemDTO(200,productService.findByParameters(condition),"");
     }
 
 
@@ -135,10 +133,8 @@ public class ProductUIController {
         if (list.size()==0){
             return new SystemDTO(200,null,"excel中没有数据或数据解析失败");
         }
-
         //将List 中的数据存储到数据库中
-        List<ProductDTO> productDTOS = productService.saveAll(list);
-        return new SystemDTO(200,productDTOS,"成功");
+        return new SystemDTO(200,productService.saveAll(list),"成功");
 
     }
 }
