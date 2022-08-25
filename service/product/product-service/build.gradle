@@ -34,6 +34,11 @@ dependencies {
     api 'mysql:mysql-connector-java'
     api 'com.baomidou:mybatis-plus-boot-starter'
 
+    //QLExpress alibaba 规则引擎
+    implementation 'com.alibaba:QLExpress:3.3.0'
+
+
+
 }
 
 test {

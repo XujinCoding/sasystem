@@ -5,7 +5,8 @@ ext {
             "mybatisPlus" : "3.0.5",
             "mysql" : "5.1.46",
             "swaggerVersion": "2.7.0",
-            "jjwtVersion": "0.7.0"
+            "jjwtVersion": "0.7.0",
+
     ]
 
     dependencies = [
