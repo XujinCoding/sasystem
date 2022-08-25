@@ -15,7 +15,7 @@ public interface ProductMapper {
 
     List<Product> getAll();
 
-    Product getProductById(@Param("productId") Long id);
+    Product findByProductId(@Param("productId") Long id);
 
     List<Product> findByParameters(ProductQueryCondition condition);
 

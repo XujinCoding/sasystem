@@ -1,50 +1,7 @@
-plugins {
-    id 'java'
-}
-
-group 'com.sa'
-version '1.0-SNAPSHOT'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'java-library'
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    api 'org.springframework.boot:spring-boot-starter-web'
-    api group: 'com.alibaba', name: 'druid', version: '1.1.18'
-    implementation 'com.alibaba:fastjson:2.0.7'
-    api project(':platform:common')
-    api project(':service:product:product-api')
-    api project(':service:customer:customer-api')
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.2.5.RELEASE'
-    implementation 'com.oracle.database.jdbc:ojdbc8:21.1.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter-aop:2.7.2'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.testng:testng:7.1.0'
-    implementation 'io.swagger:swagger-jaxrs:1.6.2'
-
-    //Lombok依赖
-    annotationProcessor 'org.projectlombok:lombok:1.18.2'
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
-    testCompileOnly 'org.projectlombok:lombok:1.18.2'
-    //JPA 的依赖引入
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.6'
-    //spring boot test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    //Mybatis依赖
-    api 'mysql:mysql-connector-java'
-    api 'com.baomidou:mybatis-plus-boot-starter'
-    //SpringBoot redis的依赖
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.0'
+    implementation project(':service:product:product-api')
+    implementation project(':service:customer:customer-api')
+    implementation project(':platform:common')
     //redisson 依赖
     implementation 'org.redisson:redisson:3.17.5'
-    //flyway 依赖引入
-    implementation 'org.flywaydb:flyway-core:5.2.4'
-
-}
-
-test {
-    useJUnitPlatform()
 }

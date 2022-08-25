@@ -15,7 +15,7 @@
     <select id="getAll" resultType="com.sa.product.domain.Product">
         SELECT * FROM PRODUCT order by PRODUCT_ID
     </select>
-    <select id="getProductById" resultType="com.sa.product.domain.Product">
+    <select id="findByProductId" resultType="com.sa.product.domain.Product">
         select * from PRODUCT where PRODUCT_ID=#{productId}
     </select>
     <select id="findByParameters" resultType="com.sa.product.domain.Product">

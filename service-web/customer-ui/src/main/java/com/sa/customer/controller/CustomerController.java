@@ -3,9 +3,9 @@ package com.sa.customer.controller;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.customer.api.business.ICustomerService;
 import com.sa.customer.dto.ProductInstanceDTO;
-import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.product.api.business.IProductService;
 import com.sa.product.dto.ProductDTO;
 import io.swagger.annotations.Api;
@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -37,8 +37,8 @@ public class CustomerController {
     LoadingCache<Long, ProductDTO> products = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(10, TimeUnit.SECONDS).build(new CacheLoader<Long, ProductDTO>() {
         @Override
         //用于指定参数,返回值不为空
-        @Nonnull
-        public ProductDTO load(@Nonnull Long key) {
+        @NotNull
+        public ProductDTO load(@NotNull Long key) {
             return productService.findById(key);
         }
     });

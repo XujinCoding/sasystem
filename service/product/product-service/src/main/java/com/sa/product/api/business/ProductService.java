@@ -54,14 +54,8 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductDTO update(ProductDTO productDTO) {
-        //去数据库中查询商品, 看是否存在这个商品
-        Product product = productMapper.getProductById(productDTO.getProductId());
-        //TODO:-------null字段映射
-        product.setProductNum(product.getProductNum()==null?product.getProductNum(): productDTO.getProductNum());
-        product.setProductPrice(product.getProductPrice()==null?product.getProductPrice(): productDTO.getProductPrice());
-        product.setProductRemark(product.getProductRemark()==null?product.getProductRemark(): productDTO.getProductRemark());
-        product.setProductName(product.getProductName()==null?product.getProductName(): productDTO.getProductName());
-        return beanMapper.map( productRepository.save(product), ProductDTO.class);
+        var findProduct = productMapper.findByProductId(productDTO.getProductId());
+        return beanMapper.map( productRepository.save(findProduct), ProductDTO.class);
     }
     @Override
     public List<ProductDTO> saveAll(List<ProductDTO> data){

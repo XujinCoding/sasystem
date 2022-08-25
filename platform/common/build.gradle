@@ -1,32 +1,8 @@
-plugins {
-    id 'java'
-}
-
-group 'com.sa'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     //阿里巴巴的easyExcel
     api 'com.alibaba:easyexcel:3.1.1'
-
-    // 2. Use Guava types in your public API:
-    api("com.google.guava:guava:31.1-jre")
-
-    //orika
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
-
     //ApplicationContext
     implementation "org.springframework:spring-context"
-
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-}
-
-test {
-    useJUnitPlatform()
+    //jersey
+    implementation 'org.springframework.boot:spring-boot-starter-jersey'
 }

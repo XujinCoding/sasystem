@@ -6,10 +6,7 @@ import com.ql.util.express.exception.QLException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -664,7 +661,24 @@ public class QLExpressTest {
             }
         }
     }
+    @Test
+    public void testOptional(){
+        Insurance insurance = new Insurance();
+        insurance.setName(null);
+        Optional<Insurance> optionalInsurance = Optional.ofNullable(null);
+        String name = optionalInsurance.get().getName();
+        System.out.println(name);
+    }
+    static class Insurance{
+        String name;
 
+        public String getName() {
+            return name;
+        }
 
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 
 }

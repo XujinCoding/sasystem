@@ -17,4 +17,5 @@ ext {
             "swaggerUI"                     : "io.springfox:springfox-swagger-ui:${version.swaggerVersion}",
             "jjwt"                          : "io.jsonwebtoken:jjwt:${version.jjwtVersion}"
     ]
+    fastjson = "com.alibaba:fastjson:${version.fastjsonVersion}"
 }
