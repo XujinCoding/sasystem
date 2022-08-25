@@ -5,7 +5,7 @@ buildscript {
     //设置仓库
     repositories {
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-        maven { url 'https://repo.spring.io/milestone'}
+        maven { url 'https://repo.spring.io/milestone' }
     }
     ext {
         springBootVersion = '2.2.1.RELEASE'
@@ -24,41 +24,41 @@ def all_api_subject = []
 def all_ext_subject = []
 subprojects.each {
     //it.subprojects.empty 可能是为了找到最下一层的项目
-    if (it.subprojects.empty && (it.name.endsWith('-api'))){
+    if (it.subprojects.empty && (it.name.endsWith('-api'))) {
         all_api_subject << it
     }
-    if (it.subprojects.empty && (!it.name.endsWith('-api') && !it.name.startsWith("common"))){
+    if (it.subprojects.empty && (!it.name.endsWith('-api') && !it.name.startsWith("common"))) {
         all_ext_subject << it
     }
-    if (it.subprojects.empty && (it.name.endsWith('-ui'))){
+    if (it.subprojects.empty && (it.name.endsWith('-ui'))) {
         all_ui_subject << it
     }
-    if (it.subprojects.empty && (it.name.endsWith('-service'))){
+    if (it.subprojects.empty && (it.name.endsWith('-service'))) {
         all_service_subject << it
     }
 }
 
 
-tasks.withType(JavaCompile){
+tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
 
 //定义所有叶子节点的共有逻辑
-configure(allprojects.findAll{it.subprojects.empty}){
+configure(allprojects.findAll { it.subprojects.empty }) {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin : 'java-library'
+    apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'
     repositories {
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-        maven { url 'https://repo.spring.io/milestone'}
+        maven { url 'https://repo.spring.io/milestone' }
     }
     // dependencyManagement版本统一管理，类似于父maven的dependencyManagement
     dependencyManagement {
         dependencies {
-            for(depJar in rootProject.ext.dependencies){
+            for (depJar in rootProject.ext.dependencies) {
                 dependency depJar.value
             }
         }
@@ -67,7 +67,7 @@ configure(allprojects.findAll{it.subprojects.empty}){
             mavenBom "org.springframework.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
         }
     }
-    dependencies{
+    dependencies {
         //swagger
         implementation 'org.apache.commons:commons-lang3:3.6'
 
@@ -92,7 +92,7 @@ configure(allprojects.findAll{it.subprojects.empty}){
     group 'com.sa'
     version '1.0-SNAPSHOT'
 
-    javadoc{
+    javadoc {
         options.charSet = 'utf8'
         options.encoding = 'utf8'
         options.docEncoding = 'utf8'
@@ -104,8 +104,8 @@ configure(allprojects.findAll{it.subprojects.empty}){
 }
 
 //定义所有 boot 项目依赖  没有common 和 Api
-configure(all_ext_subject){
-    dependencies{
+configure(all_ext_subject) {
+    dependencies {
         //spring-boot-web
         implementation "org.springframework.boot:spring-boot-starter"
         implementation "org.springframework.boot:spring-boot-starter-web"
@@ -117,11 +117,10 @@ configure(all_ext_subject){
         implementation project(':platform:common')
 
 
-
     }
 }
 
-configure(all_ui_subject){
+configure(all_ui_subject) {
     dependencies {
 
     }
@@ -149,10 +148,10 @@ configure(all_service_subject) {
     }
 }
 // 定义api工程共有的逻辑
-    configure(all_api_subject) {
-        // api工程共同依赖的第三方jar包
-        dependencies {
-            implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.2.5.RELEASE'
-            implementation project(':platform:common')
-        }
+configure(all_api_subject) {
+    // api工程共同依赖的第三方jar包
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:2.2.5.RELEASE'
+        implementation project(':platform:common')
     }
+}
