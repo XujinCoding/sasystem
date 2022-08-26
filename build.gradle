@@ -16,7 +16,7 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
-}
+}//
 apply from: 'version.gradle'
 def all_ui_subject = []
 def all_service_subject = []
@@ -50,7 +50,7 @@ configure(allprojects.findAll { it.subprojects.empty }) {
     apply plugin: 'idea'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java-library'
-    apply plugin: 'org.springframework.boot'
+
     repositories {
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'https://repo.spring.io/milestone' }
@@ -68,20 +68,18 @@ configure(allprojects.findAll { it.subprojects.empty }) {
         }
     }
     dependencies {
-        //swagger
+        //lang3
         implementation 'org.apache.commons:commons-lang3:3.6'
-
+        //swagger
         implementation 'io.springfox:springfox-swagger2'
         implementation 'io.springfox:springfox-swagger-ui'
+        //jersey
+        implementation 'org.glassfish.jersey.core:jersey-server:2.29.1'
+        implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
         //orika
         implementation 'ma.glasnost.orika:orika-core:1.5.4'
         //fastjson
         implementation 'com.alibaba:fastjson:2.0.7'
-        //jersey
-        implementation 'org.springframework.boot:spring-boot-starter-jersey'
-        implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
-        //spring boot test
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
         //lombok
         annotationProcessor 'org.projectlombok:lombok:1.18.2'
         compileOnly 'org.projectlombok:lombok:1.18.12'
@@ -105,24 +103,28 @@ configure(allprojects.findAll { it.subprojects.empty }) {
 
 //定义所有 boot 项目依赖  没有common 和 Api
 configure(all_ext_subject) {
+    apply plugin: 'org.springframework.boot'
     dependencies {
         //spring-boot-web
         implementation "org.springframework.boot:spring-boot-starter"
         implementation "org.springframework.boot:spring-boot-starter-web"
+        //spring boot test
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        //Spring Jersey
+        implementation 'org.springframework.boot:spring-boot-starter-jersey'
         //openfeign
         implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
         implementation 'io.github.openfeign:feign-jaxrs2:10.4.0'
         implementation 'io.github.openfeign:feign-okhttp'
         //common
         implementation project(':platform:common')
-
-
     }
 }
 
 configure(all_ui_subject) {
     dependencies {
-
+        //boot-config
+        implementation project(':platform:boot-config')
     }
 }
 
@@ -137,14 +139,14 @@ configure(all_service_subject) {
         api group: 'com.alibaba', name: 'druid', version: '1.1.18'
         //JPA 的依赖引入
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.6'
-
         //Mybatis-plus依赖
-        implementation 'mysql:mysql-connector-java'
         implementation 'com.baomidou:mybatis-plus-boot-starter'
         //SpringBoot redis的依赖
         implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.0'
         //flyway 依赖引入
         implementation 'org.flywaydb:flyway-core:5.2.4'
+        //boot-config
+        implementation project(':platform:boot-config')
     }
 }
 // 定义api工程共有的逻辑

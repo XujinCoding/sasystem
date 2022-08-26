@@ -4,5 +4,6 @@ dependencies {
     //ApplicationContext
     implementation "org.springframework:spring-context"
     //jersey
-    implementation 'org.springframework.boot:spring-boot-starter-jersey'
+    implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
+
 }

@@ -55,7 +55,10 @@ public class ProductService implements IProductService {
     @Override
     public ProductDTO update(ProductDTO productDTO) {
         var findProduct = productMapper.findByProductId(productDTO.getProductId());
-        return beanMapper.map( productRepository.save(findProduct), ProductDTO.class);
+        if (Objects.nonNull(findProduct)){
+            return beanMapper.map( productRepository.save( beanMapper.map(productDTO,Product.class)), ProductDTO.class);
+        }
+        return null;
     }
     @Override
     public List<ProductDTO> saveAll(List<ProductDTO> data){

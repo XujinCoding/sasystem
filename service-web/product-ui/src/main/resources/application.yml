@@ -1,26 +1,7 @@
 server:
   port: 8092
 spring:
+  profiles:
+    include: feign
   application:
     name: product-ui
-
-# feign : FeignClientProperties
-feign:
-  okhttp:
-    enabled: true
-  httpclient: # 查查
-    maxConnections: 200
-    maxConnectionsPerRoute: 50
-#    connectionTimeout: 60000
-#    connectionTimerRepeat: 70000
-  client:
-    config:
-      default:
-#        connectTimeout: 10000
-#        readTimeout: 10000
-        loggerLevel: basic
-        contract: feign.jaxrs.JAXRSContract
-
-logging:
-  level:
-    com.sa: debug

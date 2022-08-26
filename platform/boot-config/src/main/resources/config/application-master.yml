@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    username: SA_DB
+    password: xujin
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@192.168.20.56:1521/ORACLEPDB
+logging:
+  level:
+    com.sa: debug

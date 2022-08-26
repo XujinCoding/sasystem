@@ -56,7 +56,6 @@ public class ProductUIController {
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     @ApiOperation(value = "修改product信息")
     public SystemDTO update(ProductDTO productDTO) {
-
         return new SystemDTO(200, productService.update(productDTO), "");
     }
 

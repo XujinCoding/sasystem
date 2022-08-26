@@ -1,5 +1,5 @@
 dependencies {
-    api project(':service:product:product-api')
-    api project(':service:customer:customer-api')
+    implementation project(':service:product:product-api')
+    implementation project(':service:customer:customer-api')
 }
 

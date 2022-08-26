@@ -122,7 +122,7 @@ public class BatchAcceptCustomerJob {
         String[] customerArray = data.split(",");
         List<BatchTaskItem> list = Arrays.stream(customerArray)
                 .filter((cusName) -> !customerNameList.contains(cusName))
-                .map(c -> new BatchTaskItem().setTaskId(taskId).setCustomerName(c).setCustomerAge(22).setCustomerHome("北京"))
+                .map(c -> new BatchTaskItem().setTaskId(taskId).setCustomerName(c).setCustomerAge(22).setCustomerHome("北京").setState(Status.PREPARING))
                 .collect(Collectors.toList());
         insertItemTOBatchTaskItem(list);
         return customerArray.length;

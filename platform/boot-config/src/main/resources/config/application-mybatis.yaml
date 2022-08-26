@@ -1,0 +1,6 @@
+mybatis-plus:
+  mapper-locations: classpath:mapping/*.xml
+  configuration:
+    map-underscore-to-camel-case: true # 开启驼峰映射
+#  type-enums-package: com.sa.customer.dto.job
+#  type-handlers-package: com.sa.customer.handle

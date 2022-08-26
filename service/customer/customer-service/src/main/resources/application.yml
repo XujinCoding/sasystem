@@ -1,46 +1,15 @@
 server:
   port: 8093
 spring:
+  profiles:
+    include: jpa, mybatis, flyway,redis
   application:
     name: customer-service
-  datasource:
-    username: SA_DB
-    password: xujin
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@192.168.20.56:1521/ORACLEPDB
-    type: com.alibaba.druid.pool.DruidDataSource
-    # 此处需要使用配置文件将配置注入
-    initialSize: 5 # 初始化数量
-    maxActive: 20 # 最大活动连接数
-    minIdle: 1 # 最小空闲数量
-    maxWait: 6000 # 最大等待时间
-  jpa:
-    #配置在日志中打印出执行的 SQL 语句信息。
-    show-sql: true
-  redis:
-    database: 0
-    host: 127.0.0.1
-    port: 6973
-    timeout: 500
-    jedis:
-      pool:
-        max-active: 8
-        max-wait: -1ms
-        max-idle: 8
-        min-idle: 0
   flyway:
-    enabled: true
-    encoding: utf-8
-    locations: classpath:db/migration
-    baseline-on-migrate: true
     placeholders: {table_space: TBLBATCH_TASK, db_script_i18n: en}
 mybatis-plus:
-  mapper-locations: classpath:mapping/*.xml
-  configuration:
-    map-underscore-to-camel-case: true # 开启驼峰映射
   type-enums-package: com.sa.customer.dto.job
   type-handlers-package: com.sa.customer.handle
-
 logging:
   level:
     com.sa: debug
