@@ -15,9 +15,13 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author starttimesxj
+ * 全局一事务处理
+ */
 //@Aspect
 //@Configuration
-public class TransactionManager {
+public class EnableTransactionManager {
     @Autowired
     PlatformTransactionManager transactionManager;
 
@@ -31,8 +35,12 @@ public class TransactionManager {
         //可写事务
         var requiredTx = new RuleBasedTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED, null);
 
+        var sonTx = new RuleBasedTransactionAttribute(TransactionDefinition.PROPAGATION_NESTED, null);
+
         NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
         Map<String, TransactionAttribute> txMap = new HashMap<>();
+
+
 
         //配置只读事务
         txMap.put("get*", readOnlyTx);
@@ -40,7 +48,7 @@ public class TransactionManager {
         txMap.put("find*", readOnlyTx);
 
         //配置事务方法的前缀
-        txMap.put("insert*", requiredTx);
+        txMap.put("update*", sonTx);
 
         source.setNameMap(txMap);
         return new TransactionInterceptor(transactionManager, source);

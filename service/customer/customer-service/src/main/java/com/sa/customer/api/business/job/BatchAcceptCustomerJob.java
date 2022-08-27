@@ -70,6 +70,8 @@ public class BatchAcceptCustomerJob {
                     if (success + fail >= task.getTotal()) {
                         task.setFailNum(fail).setSuccessNum(success).setData("ok").setState(Status.SUCCESS);
                         batchTaskRepository.save(task);
+                        //TODO------------------------
+//                        throw new RuntimeException("test");
                     } else {
                         batchTaskRepository.setSuccessAndFailNum(taskId, success, fail);
                     }
