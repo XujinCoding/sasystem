@@ -1,15 +1,14 @@
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter"
-    implementation 'org.springframework.boot:spring-boot-actuator-autoconfigure'
     implementation "org.springframework.cloud:spring-cloud-context"
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     compile project(':platform:common')
     //oracle
     implementation 'com.oracle.database.jdbc:ojdbc8:21.1.0.0'
     //druid
-    implementation 'com.alibaba:druid-spring-boot-starter:1.2.9'
+//    implementation 'com.alibaba:druid-spring-boot-starter:1.2.9'
     //mybatis
-    compile 'com.baomidou:mybatis-plus-boot-starter'
+//    implementation 'com.baomidou:mybatis-plus-boot-starter'
     //lombok
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
     compileOnly 'org.projectlombok:lombok:1.18.12'
