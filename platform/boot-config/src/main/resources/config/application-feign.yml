@@ -13,3 +13,5 @@ feign:
         readTimeout: 60000
         loggerLevel: basic
         contract: feign.jaxrs.JAXRSContract
+        decode404: true
+        error-decoder: com.sa.common.exception.decoder.FeignExceptionDecoder

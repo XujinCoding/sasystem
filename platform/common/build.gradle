@@ -5,5 +5,7 @@ dependencies {
     implementation "org.springframework:spring-context"
     //jersey
     implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
+    //openfeign
+    implementation 'io.github.openfeign:feign-core:10.4.0'
 
 }

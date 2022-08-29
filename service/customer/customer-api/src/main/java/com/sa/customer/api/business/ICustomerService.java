@@ -6,6 +6,8 @@ import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.common.dto.job.Status;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,7 +24,8 @@ public interface ICustomerService {
 
     @GET
     @Path("/find-by-id/{customerId}" )
-    CustomerDTO findById(@PathParam("customerId") Long customerId);
+    @ResponseBody
+    CustomerDTO findById(@PathParam("customerId") @RequestParam("customerId") Long customerId);
     @POST
     @Path("/buyProduct")
     List<ProductInstanceDTO> buyProduct(@RequestBody List<ProductInstanceDTO> list);

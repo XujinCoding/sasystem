@@ -1,5 +1,6 @@
 package com.sa.customer;
 
+import com.sa.common.exception.mapper.JerseySystemExceptionMapper;
 import com.sa.customer.config.JerseyServiceAutoScanner;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.mybatis.spring.annotation.MapperScan;
@@ -11,6 +12,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * @author starttimesxj
+ */
 @SpringBootApplication(scanBasePackages = "com.sa")
 @MapperScan("com.sa.customer.dao.mybatis")
 @EnableScheduling
@@ -25,6 +29,7 @@ public class CustomerServiceApplication {
         ResourceConfig resourceConfig = new ResourceConfig();
         //注册jersey注解扫描器
         resourceConfig.registerClasses(JerseyServiceAutoScanner.getPublishJerseyServiceClasses(applicationContext,"com.sa.customer.api.business"));
+        resourceConfig.registerClasses(JerseySystemExceptionMapper.class);
         return resourceConfig;
     }
 }

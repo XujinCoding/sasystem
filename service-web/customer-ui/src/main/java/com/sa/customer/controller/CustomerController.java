@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.sa.common.dto.job.BatchTaskDTO;
 import com.sa.customer.api.business.ICustomerService;
+import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
 import com.sa.product.api.business.IProductService;
 import com.sa.product.dto.ProductDTO;
@@ -107,4 +108,14 @@ public class CustomerController {
     public BatchTaskDTO asynchronouslyAddCustomer(@RequestBody BatchTaskDTO batchTaskDTO) {
         return customerService.createAsynchronouslyTask(batchTaskDTO);
     }
+
+    @RequestMapping(value = "customer/findById", method = RequestMethod.GET)
+    @ApiOperation(value = "根据客户Id查询")
+    @ResponseBody
+    public CustomerDTO findCustomerById(@RequestParam("id") Long id) {
+        return customerService.findById(id);
+    }
+
+
+
 }
