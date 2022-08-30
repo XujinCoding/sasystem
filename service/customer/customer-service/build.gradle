@@ -4,4 +4,7 @@ dependencies {
     implementation project(':platform:common')
     //redisson 依赖
     implementation 'org.redisson:redisson:3.17.5'
+    implementation 'org.apache.httpcomponents:httpcore:4.4.13'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
 }
