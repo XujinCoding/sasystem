@@ -75,7 +75,7 @@ configure(allprojects.findAll { it.subprojects.empty }) {
         implementation 'io.springfox:springfox-swagger-ui'
         //jersey
         implementation 'org.glassfish.jersey.core:jersey-server:2.29.1'
-        implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
+//        implementation 'org.glassfish.jersey.core:jersey-client:2.29.1'
         //orika
         implementation 'ma.glasnost.orika:orika-core:1.5.4'
         //fastjson
