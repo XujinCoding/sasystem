@@ -67,7 +67,7 @@ public class BatchAcceptCustomerJob {
                     Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.SUCCESS, taskId);
                     Integer fail = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.FAILURE, taskId);
                     //如果成功数 + 失败数 = 总数 ,代表所有数据处理成功, 将任务设置为已完成
-                    if (success + fail >= task.getTotal()) {
+                    if (Objects.nonNull(task.getTotal()) && success + fail >= task.getTotal()) {
                         task.setFailNum(fail).setSuccessNum(success).setData("ok").setState(Status.SUCCESS);
                         batchTaskRepository.save(task);
                     } else {
@@ -115,6 +115,8 @@ public class BatchAcceptCustomerJob {
         String data = batchTask.getData();
         Long taskId = batchTask.getTaskId();
         List<String> customerNameList = batchTaskItemRepository.findAllByTaskId(taskId).stream().map(BatchTaskItem::getCustomerName).collect(Collectors.toList());
+        //如果传递进来两个相同的任务
+
         //如果传进来的数据是空串就返回null
         if (StringUtils.isEmpty(data)) {
             return 0;

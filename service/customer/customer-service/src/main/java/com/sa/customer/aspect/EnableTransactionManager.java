@@ -46,8 +46,6 @@ public class EnableTransactionManager {
         readOnlyTx.setReadOnly(true);
         //可写事务
         var requiredTx = new RuleBasedTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED, null);
-        //子事务
-        var sonTx = new RuleBasedTransactionAttribute(TransactionDefinition.PROPAGATION_NESTED, null);
 
         NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
         Map<String, TransactionAttribute> txMap = new HashMap<>();
@@ -55,15 +53,16 @@ public class EnableTransactionManager {
 
 
         //配置只读事务
-        txMap.put("add*", readOnlyTx);
-        txMap.put("do*", readOnlyTx);
         txMap.put("find*", readOnlyTx);
 
-        //配置子事务
-        txMap.put("update*", sonTx);
 
         //配置事务方法的前缀
-        txMap.put("*", requiredTx);
+        txMap.put("add*", requiredTx);
+        txMap.put("do*", requiredTx);
+        txMap.put("insert*", requiredTx);
+        txMap.put("parse*", requiredTx);
+//        txMap.put("execute*", requiredTx);
+
 
         source.setNameMap(txMap);
         return new TransactionInterceptor(transactionManager, source);
@@ -71,7 +70,6 @@ public class EnableTransactionManager {
 
     /**
      * 注册事务
-     *
      * @return
      */
     @Bean

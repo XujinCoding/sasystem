@@ -2,8 +2,7 @@ spring:
   transaction:
     default-timeout: 60000s
   jpa:
-    # 交给druid来负责sql的打印;
-    showSql: false
+    showSql: true
   datasource:
     druid:
       # 初始化时建立物理连接的个数

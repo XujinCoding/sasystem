@@ -1,17 +1,5 @@
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter"
     implementation "org.springframework.cloud:spring-cloud-context"
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    compile project(':platform:common')
-    //oracle
-    implementation 'com.oracle.database.jdbc:ojdbc8:21.1.0.0'
-    //druid
-//    implementation 'com.alibaba:druid-spring-boot-starter:1.2.9'
-    //mybatis
-//    implementation 'com.baomidou:mybatis-plus-boot-starter'
-    //lombok
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-    //SpringBoot redis的依赖
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.0'
-}
+    implementation project(':platform:common')
+   }

@@ -4,6 +4,7 @@ spring:
     password: xujin
     driver-class-name: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@192.168.20.56:1521/ORACLEPDB
+    type: com.alibaba.druid.pool.DruidDataSource
 logging:
   level:
     com.sa: debug

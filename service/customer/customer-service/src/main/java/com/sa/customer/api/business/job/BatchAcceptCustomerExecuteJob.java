@@ -2,11 +2,11 @@ package com.sa.customer.api.business.job;
 
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.Type;
-import com.sa.customer.domain.BatchTaskItem;
-import com.sa.customer.domain.Customer;
 import com.sa.customer.dao.jpa.BatchTaskItemRepository;
 import com.sa.customer.dao.jpa.BatchTaskRepository;
 import com.sa.customer.dao.jpa.CustomerRepository;
+import com.sa.customer.domain.BatchTaskItem;
+import com.sa.customer.domain.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,24 +55,14 @@ public class BatchAcceptCustomerExecuteJob {
                     List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);
                     itemList.forEach((item) -> {
                         if (batchTaskRepository.findTypeByTaskId(item.getTaskId()) == Type.BATCH_ADD_CUSTOMER.ordinal()) {
-                            //手动开启事务
-                            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-                            def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-                            TransactionStatus status = txManager.getTransaction(def);
-                            try {
-                                //将信息插入到Customer表中
-                                addItemIntoCustomer(item);
+                            if (addItemIntoCustomer(item)) {
                                 //修改信息
                                 batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(), "");
-                                //提交任务
-                                txManager.commit(status);
-                            } catch (Exception e) {
-                                txManager.rollback(status);
-                                batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.FAILURE.ordinal(), e.getMessage());
+                            } else {
+                                batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.FAILURE.ordinal(), "用户信息存在");
                             }
                         }
                     });
-
                 }
             } catch (IOException e) {
                 log.error("BatchAcceptCustomerExecuteJob:executeTaskItem------------", e);
@@ -80,17 +70,34 @@ public class BatchAcceptCustomerExecuteJob {
         });
     }
 
-    private void addItemIntoCustomer(BatchTaskItem item) {
-        Customer customer = new Customer();
-        customer.setCustomerAge(item.getCustomerAge());
-        customer.setCustomerHome(item.getCustomerHome());
-        customer.setCustomerName(item.getCustomerName());
-        Customer target = customerRepository.findByCustomerName(item.getCustomerName());
-        if (Objects.isNull(target)) {
-            Customer save = customerRepository.save(customer);
-            log.info("------------存储到Customer表-----------" + save);
-        } else {
-            throw new RuntimeException("用户已经存在");
+//    @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
+
+    public Boolean addItemIntoCustomer(BatchTaskItem item) {
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            Customer customer = new Customer();
+            customer.setCustomerAge(item.getCustomerAge());
+            customer.setCustomerHome(item.getCustomerHome());
+            customer.setCustomerName(item.getCustomerName());
+            Customer target = customerRepository.findByCustomerName(item.getCustomerName());
+            Customer customer1 = Objects.isNull(target) ? customerRepository.save(customer) : null;
+//            int i = 1/0;
+            if (Objects.nonNull(customer1)) {
+                log.info("------------存储到Customer表-----------" + customer1);
+                txManager.commit(status);
+                return true;
+            }else {
+                txManager.commit(status);
+                return false;
+            }
+
+        } catch (Exception e) {
+            //...
+            txManager.rollback(status);
+            log.error("BatchAcceptCustomerExcuteJob : addItemIntoCustomer",e);
+            return false;
         }
     }
 

@@ -5,11 +5,13 @@ import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.TaskLevel;
 import com.sa.common.mapper.BeanMapper;
 import com.sa.customer.dao.jpa.BatchTaskRepository;
+import com.sa.customer.dao.jpa.CustomerRepository;
 import com.sa.customer.dao.mybatis.CustomerMapper;
 import com.sa.customer.domain.BatchTask;
 import com.sa.customer.domain.ProductInstance;
 import com.sa.customer.dto.CustomerDTO;
 import com.sa.customer.dto.ProductInstanceDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class CustomerService implements ICustomerService {
 
     @Autowired
@@ -28,6 +31,9 @@ public class CustomerService implements ICustomerService {
 
     @Autowired
     private BatchTaskRepository batchTaskRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
 
     /**
@@ -84,4 +90,26 @@ public class CustomerService implements ICustomerService {
         }
         return beanMapper.map(batchTaskRepository.save(map), BatchTaskDTO.class);
     }
+
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    public Boolean addItemIntoCustomer(BatchTaskItemDTO item1) {
+//        BatchTaskItem item = beanMapper.map(item1, BatchTaskItem.class);
+//        try {
+//            Customer customer = new Customer();
+//            customer.setCustomerAge(item.getCustomerAge());
+//            customer.setCustomerHome(item.getCustomerHome());
+//            customer.setCustomerName(item.getCustomerName());
+//            Customer target = customerRepository.findByCustomerName(item.getCustomerName());
+//            Customer customer1 = Objects.isNull(target) ? customerRepository.save(customer) : null;
+//            int i = 1/0;
+//            if (Objects.nonNull(customer1)) {
+//                log.info("------------存储到Customer表-----------" + customer1);
+//                return true;
+//            }
+//        } catch (Exception e) {
+//            //...
+//            log.error("BatchAcceptCustomerExcuteJob : addItemIntoCustomer",e);
+//        }
+//        return false;
+//    }
 }
