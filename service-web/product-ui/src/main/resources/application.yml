@@ -5,3 +5,7 @@ spring:
     include: feign
   application:
     name: product-ui
+
+logging:
+  level:
+    com.sa: debug
