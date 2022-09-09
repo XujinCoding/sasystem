@@ -1,4 +1,4 @@
-package com.sa.product.easyExcel.test;
+package com.sa.product.easyExcel.test.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.sa.product.easyExcel.test.convert.EnumConvert;

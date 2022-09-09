@@ -1,4 +1,4 @@
-package com.sa.product.easyExcel.test;
+package com.sa.product.easyExcel.test.dto;
 
 public enum SexEnum {
     MAN("男"),
