@@ -1,47 +1,26 @@
 package com.sa.product.easyExcel.test.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentStyle;
+import com.alibaba.excel.converters.localdatetime.LocalDateNumberConverter;
 import com.sa.product.easyExcel.test.convert.EnumConvert;
+import lombok.Data;
 
+import java.time.LocalDateTime;
 
+@Data
 public class ExcelDTO {
-    @ExcelProperty(index = 0, value = "姓名")
+    @ExcelProperty(index = 0, value = {"员工表","姓名"})
+    @ColumnWidth(50)
     private String name;
-    @ExcelProperty(index = 1,value = "年龄")
+    @ExcelProperty(index = 1,value = {"员工表","年龄"})
+    @ColumnWidth(50)
     private Integer age;
-    @ExcelProperty(index = 2,value = "性别",converter = EnumConvert.class)
+    @ExcelProperty(index = 2,value = {"员工表","性别"},converter = EnumConvert.class)
+    @ColumnWidth(50)
     private SexEnum sex;
-
-    public ExcelDTO() {
-    }
-
-    public ExcelDTO(String name, Integer age, SexEnum sex) {
-        this.name = name;
-        this.age = age;
-        this.sex = sex;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public SexEnum getSex() {
-        return sex;
-    }
-
-    public void setSex(SexEnum sex) {
-        this.sex = sex;
-    }
+    @ContentStyle(dataFormat = 0xe)
+    @ExcelProperty(index = 3, value = {"员工--","生日"},converter = LocalDateNumberConverter.class)
+    private LocalDateTime date;
 }

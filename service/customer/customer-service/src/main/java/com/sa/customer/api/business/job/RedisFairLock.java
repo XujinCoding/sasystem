@@ -31,7 +31,11 @@ public class RedisFairLock implements Closeable {
     public void close() throws IOException {
         if (Objects.nonNull(fairLock)){
             //自动关闭锁
-            fairLock.unlock();
+            try {
+                fairLock.unlock();
+            }catch (Exception e) {
+                log.error("RedisFairLock : close()",e);
+            }
             log.info("-----------------自动解锁" + fairLock.getName());
         }
     }

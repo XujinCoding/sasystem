@@ -12,6 +12,7 @@ public class ReadListener<T> extends AnalysisEventListener<T> {
     List<T> list = new ArrayList<>();
     @Override
     public void invoke(T data, AnalysisContext context) {
+        context.getCustom();
         list.add(data);
     }
 

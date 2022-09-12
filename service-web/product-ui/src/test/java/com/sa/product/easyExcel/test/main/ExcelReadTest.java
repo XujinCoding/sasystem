@@ -12,6 +12,7 @@ import java.util.List;
 public class ExcelReadTest {
     @Test
     public void simpleRead(){
+        long start = System.currentTimeMillis();
         ReadListener<ExcelDTO> readListener = new ReadListener<>();
         ExcelReaderBuilder read = EasyExcel.read("test_read.xlsx", ExcelDTO.class, readListener).headRowNumber(1);
         ExcelReaderSheetBuilder sheet = read.sheet();
@@ -20,5 +21,6 @@ public class ExcelReadTest {
         list.forEach((dto)->{
             System.out.println(dto.toString());
         });
+        System.out.println(System.currentTimeMillis()-start);
     }
 }
