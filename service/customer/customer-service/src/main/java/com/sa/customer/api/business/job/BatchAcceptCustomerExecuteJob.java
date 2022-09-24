@@ -8,7 +8,6 @@ import com.sa.customer.dao.jpa.CustomerRepository;
 import com.sa.customer.domain.BatchTaskItem;
 import com.sa.customer.domain.Customer;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -45,13 +44,13 @@ public class BatchAcceptCustomerExecuteJob {
     @Autowired
     private PlatformTransactionManager txManager;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000,initialDelay = 10000)
     public void executeTaskItem() {
         List<Long> taskIdList = batchTaskRepository.findTasIdByState(Status.RUNNING.ordinal());
         taskIdList.forEach(taskId -> {
-            try (RedisFairLock redisFairLock = new RedisFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId)) {
+            try (RedisFairLock redisFairLock = new RedisFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId, TimeUnit.SECONDS)) {
                 //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
-                if (tryLock(redisFairLock.getFairLock(), TimeUnit.SECONDS)) {
+                if (redisFairLock.tryLock()) {
                     List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);
                     itemList.forEach((item) -> {
                         if (batchTaskRepository.findTypeByTaskId(item.getTaskId()) == Type.BATCH_ADD_CUSTOMER.ordinal()) {
@@ -69,10 +68,8 @@ public class BatchAcceptCustomerExecuteJob {
             }
         });
     }
-
-//    @Transactional(propagation = Propagation.REQUIRES_NEW,rollbackFor = Exception.class)
-
     public Boolean addItemIntoCustomer(BatchTaskItem item) {
+        //手动开启事务
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
         def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
         TransactionStatus status = txManager.getTransaction(def);
@@ -83,7 +80,6 @@ public class BatchAcceptCustomerExecuteJob {
             customer.setCustomerName(item.getCustomerName());
             Customer target = customerRepository.findByCustomerName(item.getCustomerName());
             Customer customer1 = Objects.isNull(target) ? customerRepository.save(customer) : null;
-//            int i = 1/0;
             if (Objects.nonNull(customer1)) {
                 log.info("------------存储到Customer表-----------" + customer1);
                 txManager.commit(status);
@@ -92,23 +88,11 @@ public class BatchAcceptCustomerExecuteJob {
                 txManager.commit(status);
                 return false;
             }
-
         } catch (Exception e) {
-            //...
             txManager.rollback(status);
             log.error("BatchAcceptCustomerExcuteJob : addItemIntoCustomer",e);
             return false;
         }
-    }
-
-    public Boolean tryLock(RLock rLock, TimeUnit unit) {
-        boolean tryLock = false;
-        try {
-            tryLock = rLock.tryLock(0, -1, unit);
-        } catch (InterruptedException e) {
-            return false;
-        }
-        return tryLock;
     }
 }
 

@@ -2,10 +2,7 @@ package com.sa.customer.domain;
 
 
 import com.sa.common.dto.job.Status;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.Hibernate;
 
@@ -20,6 +17,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "BATCH_TASK_ITEM")
 @Accessors(chain = true)
 @Entity
@@ -59,14 +57,6 @@ public class BatchTaskItem {
     @Column(name = "PRODUCT_REMARK")
     private String productRemark;
 
-    public BatchTaskItem(Long taskId, Status state, String msg, String customerName, Integer customerAge, String customerHome) {
-        this.taskId = taskId;
-        this.state = state;
-        this.msg = msg;
-        this.customerName = customerName;
-        this.customerAge = customerAge;
-        this.customerHome = customerHome;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -79,7 +69,9 @@ public class BatchTaskItem {
         BatchTaskItem that = (BatchTaskItem) o;
         return id != null && Objects.equals(id, that.id);
     }
-
+    public static  BatchTaskItem getCustomerTaskItem (Long taskId, Status state, String customerName, Integer customerAge, String customerHome) {
+        return new BatchTaskItem().setTaskId(taskId).setCustomerName(customerName).setCustomerAge(customerAge).setCustomerHome(customerHome).setState(state);
+    }
     @Override
     public int hashCode() {
         return getClass().hashCode();

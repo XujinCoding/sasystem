@@ -3,12 +3,11 @@ package com.sa.customer.api.business.job;
 import com.sa.common.dto.job.Status;
 import com.sa.common.dto.job.Type;
 import com.sa.customer.api.business.ICustomerService;
-import com.sa.customer.domain.BatchTask;
-import com.sa.customer.domain.BatchTaskItem;
 import com.sa.customer.dao.jpa.BatchTaskItemRepository;
 import com.sa.customer.dao.jpa.BatchTaskRepository;
+import com.sa.customer.domain.BatchTask;
+import com.sa.customer.domain.BatchTaskItem;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -45,7 +44,7 @@ public class BatchAcceptCustomerJob {
     private BatchTaskRepository batchTaskRepository;
 
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000,initialDelay = 10000)
     public void addCustomerJob() {
 //        将任务拆分到任务细节表
         doTaskItem();
@@ -59,9 +58,9 @@ public class BatchAcceptCustomerJob {
         //查询所有的正在处理中的任务
         List<BatchTask> taskList = batchTaskRepository.getByStateOrderByTaskLevelDescTaskIdAsc(Status.RUNNING);
         taskList.forEach(task -> {
-            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + "_CHANGE_STATUS:" + task.getTaskId())) {
+            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + "_CHANGE_STATUS:" + task.getTaskId(),TimeUnit.SECONDS)) {
                 //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
-                if (tryLock(redisFairLock.getFairLock(), TimeUnit.SECONDS)) {
+                if (redisFairLock.tryLock()) {
                     log.info("-----------------updateTaskStatusAndNums加锁");
                     Long taskId = task.getTaskId();
                     Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.SUCCESS, taskId);
@@ -91,9 +90,9 @@ public class BatchAcceptCustomerJob {
                 return;
             }
             //使用Redisson进行加锁
-            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + ":" + task.getTaskId())) {
+            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + ":" + task.getTaskId(), TimeUnit.SECONDS)) {
                 //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
-                if (tryLock(redisFairLock.getFairLock(), TimeUnit.SECONDS)) {
+                if (redisFairLock.tryLock()) {
                     log.info("-----------------doTaskItem加锁");
                     //如果任务的数据为null,不用进行分解,直接将任务设置成处理成功即
                     if (Type.BATCH_ADD_CUSTOMER.equals(task.getType())) {
@@ -113,43 +112,19 @@ public class BatchAcceptCustomerJob {
 
     public Integer parseStringToTask(BatchTask batchTask) {
         String data = batchTask.getData();
-        Long taskId = batchTask.getTaskId();
-        List<String> customerNameList = batchTaskItemRepository.findAllByTaskId(taskId).stream().map(BatchTaskItem::getCustomerName).collect(Collectors.toList());
-        //如果传递进来两个相同的任务
-
         //如果传进来的数据是空串就返回null
         if (StringUtils.isEmpty(data)) {
             return 0;
         }
+        Long taskId = batchTask.getTaskId();
+        List<String> customerNameList = batchTaskItemRepository.findAllByTaskId(taskId).stream().map(BatchTaskItem::getCustomerName).collect(Collectors.toList());
         String[] customerArray = data.split(",");
-        List<BatchTaskItem> list = Arrays.stream(customerArray)
+        List<BatchTaskItem> taskItemList = Arrays.stream(customerArray)
                 .filter((cusName) -> !customerNameList.contains(cusName))
-                .map(c -> new BatchTaskItem().setTaskId(taskId).setCustomerName(c).setCustomerAge(22).setCustomerHome("北京").setState(Status.PREPARING))
+                .map(name -> BatchTaskItem.getCustomerTaskItem(taskId,Status.PREPARING,name,22,"北京"))
                 .collect(Collectors.toList());
-        insertItemTOBatchTaskItem(list);
+        //信息入库
+        batchTaskItemRepository.saveAll(taskItemList);
         return customerArray.length;
-    }
-
-
-    public void insertItemTOBatchTaskItem(List<BatchTaskItem> taskItemList) {
-        //传递进来的都是不在明细表中的数据, 可以直接入库
-        taskItemList.forEach(item -> {
-            insertItemTable(item);
-        });
-    }
-
-    public void insertItemTable(BatchTaskItem detail) {
-        BatchTaskItem save = batchTaskItemRepository.save(detail);
-    }
-
-    public Boolean tryLock(RLock rLock, TimeUnit unit) {
-        boolean tryLock = false;
-        try {
-            tryLock = rLock.tryLock(0, -1, unit);
-        } catch (InterruptedException e) {
-            log.error("BatchAcceptCustomerJob:tryLock------------", e);
-            return false;
-        }
-        return tryLock;
     }
 }
