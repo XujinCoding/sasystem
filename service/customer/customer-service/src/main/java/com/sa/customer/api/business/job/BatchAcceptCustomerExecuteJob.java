@@ -44,30 +44,33 @@ public class BatchAcceptCustomerExecuteJob {
     @Autowired
     private PlatformTransactionManager txManager;
 
-    @Scheduled(fixedDelay = 10000,initialDelay = 10000)
+    @Scheduled(fixedDelay = 10000, initialDelay = 10000)
     public void executeTaskItem() {
         List<Long> taskIdList = batchTaskRepository.findTasIdByState(Status.RUNNING.ordinal());
         taskIdList.forEach(taskId -> {
-            try (RedisFairLock redisFairLock = new RedisFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId, TimeUnit.SECONDS)) {
-                //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
-                if (redisFairLock.tryLock()) {
-                    List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);
-                    itemList.forEach((item) -> {
-                        if (batchTaskRepository.findTypeByTaskId(item.getTaskId()) == Type.BATCH_ADD_CUSTOMER.ordinal()) {
+            if (batchTaskRepository.findTypeByTaskId(taskId) == Type.BATCH_ADD_CUSTOMER.ordinal()) {
+                try (RedisFairLock redisFairLock = new RedisFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId, TimeUnit.SECONDS)) {
+                    //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
+                    if (redisFairLock.tryLock()) {
+                        List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);
+                        itemList.forEach((item) -> {
+
                             if (addItemIntoCustomer(item)) {
                                 //修改信息
                                 batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.SUCCESS.ordinal(), "");
                             } else {
                                 batchTaskItemRepository.setStatusAndMsgById(item.getId(), Status.FAILURE.ordinal(), "用户信息存在");
                             }
-                        }
-                    });
+
+                        });
+                    }
+                } catch (IOException e) {
+                    log.error("BatchAcceptCustomerExecuteJob:executeTaskItem------------", e);
                 }
-            } catch (IOException e) {
-                log.error("BatchAcceptCustomerExecuteJob:executeTaskItem------------", e);
             }
         });
     }
+
     public Boolean addItemIntoCustomer(BatchTaskItem item) {
         //手动开启事务
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -84,13 +87,13 @@ public class BatchAcceptCustomerExecuteJob {
                 log.info("------------存储到Customer表-----------" + customer1);
                 txManager.commit(status);
                 return true;
-            }else {
+            } else {
                 txManager.commit(status);
                 return false;
             }
         } catch (Exception e) {
             txManager.rollback(status);
-            log.error("BatchAcceptCustomerExcuteJob : addItemIntoCustomer",e);
+            log.error("BatchAcceptCustomerExcuteJob : addItemIntoCustomer", e);
             return false;
         }
     }

@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- *
  * @author starttimesxj
  */
 @Getter
@@ -23,7 +22,8 @@ import java.util.Objects;
 @Entity
 public class BatchTaskItem {
     @Id
-    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR",sequenceName = "SEQ_BATCH_TASK_ITEM",allocationSize = 1)//自定义的自增策略
+    @SequenceGenerator(name = "TASK_DETAIL_ID_GENERATOR", sequenceName = "SEQ_BATCH_TASK_ITEM", allocationSize = 1)
+//自定义的自增策略
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ_BATCH_TASK_ITEM")//设置主键自增
     private Long id;
 
@@ -69,9 +69,11 @@ public class BatchTaskItem {
         BatchTaskItem that = (BatchTaskItem) o;
         return id != null && Objects.equals(id, that.id);
     }
-    public static  BatchTaskItem getCustomerTaskItem (Long taskId, Status state, String customerName, Integer customerAge, String customerHome) {
+
+    public static BatchTaskItem getCustomerTaskItem(Long taskId, Status state, String customerName, Integer customerAge, String customerHome) {
         return new BatchTaskItem().setTaskId(taskId).setCustomerName(customerName).setCustomerAge(customerAge).setCustomerHome(customerHome).setState(state);
     }
+
     @Override
     public int hashCode() {
         return getClass().hashCode();
