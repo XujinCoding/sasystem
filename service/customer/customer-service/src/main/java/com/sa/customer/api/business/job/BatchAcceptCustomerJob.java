@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -58,10 +57,10 @@ public class BatchAcceptCustomerJob {
         //查询所有的正在处理中的任务
         List<BatchTask> taskList = batchTaskRepository.getByStateOrderByTaskLevelDescTaskIdAsc(Status.RUNNING);
         taskList.forEach(task -> {
-            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + "_CHANGE_STATUS:" + task.getTaskId(),TimeUnit.SECONDS)) {
+            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + "_CHANGE_STATUS:" + task.getTaskId())) {
                 //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
                 if (redisFairLock.tryLock()) {
-                    log.info("-----------------updateTaskStatusAndNums加锁");
+                    log.info("-----------------updateTaskStatusAndNums加锁" + redisFairLock.getkey());
                     Long taskId = task.getTaskId();
                     Integer success = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.SUCCESS, taskId);
                     Integer fail = batchTaskItemRepository.countBatchTaskItemByStateAndTaskId(Status.FAILURE, taskId);
@@ -90,10 +89,10 @@ public class BatchAcceptCustomerJob {
                 return;
             }
             //使用Redisson进行加锁
-            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + ":" + task.getTaskId(), TimeUnit.SECONDS)) {
+            try (RedisFairLock redisFairLock = new RedisFairLock(priKey + ":" + task.getTaskId())) {
                 //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
                 if (redisFairLock.tryLock()) {
-                    log.info("-----------------doTaskItem加锁");
+                    log.info("-----------------doTaskItem加锁"+redisFairLock.getkey());
                     //如果任务的数据为null,不用进行分解,直接将任务设置成处理成功即
                     if (Type.BATCH_ADD_CUSTOMER.equals(task.getType())) {
                         //设置总数并且修改任务状态

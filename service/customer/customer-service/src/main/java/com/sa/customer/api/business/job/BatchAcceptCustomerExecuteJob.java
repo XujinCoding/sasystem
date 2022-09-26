@@ -19,7 +19,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 本类用于执行任务细节, 将任务添加到指定数据库中
@@ -49,7 +48,7 @@ public class BatchAcceptCustomerExecuteJob {
         List<Long> taskIdList = batchTaskRepository.findTasIdByState(Status.RUNNING.ordinal());
         taskIdList.forEach(taskId -> {
             if (batchTaskRepository.findTypeByTaskId(taskId) == Type.BATCH_ADD_CUSTOMER.ordinal()) {
-                try (RedisFairLock redisFairLock = new RedisFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId, TimeUnit.SECONDS)) {
+                try (RedisFairLock redisFairLock = new RedisFairLock(PRI_KEY + "_ADD_ITEM_INTO_CUSTOMER:" + taskId)) {
                     //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
                     if (redisFairLock.tryLock()) {
                         List<BatchTaskItem> itemList = batchTaskItemRepository.findBatchTaskItemsByStateAndTaskIdOrderById(Status.PREPARING, taskId);

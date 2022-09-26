@@ -8,7 +8,7 @@ public interface Lock extends Closeable {
     boolean tryLock();
 
     void unlock();
-
+    String getkey();
     @Override
     void close() throws IOException;
 }
