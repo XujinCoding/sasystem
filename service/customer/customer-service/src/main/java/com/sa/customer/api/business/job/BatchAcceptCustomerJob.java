@@ -42,8 +42,12 @@ public class BatchAcceptCustomerJob {
     @Autowired
     private BatchTaskRepository batchTaskRepository;
 
-
-    @Scheduled(fixedDelay = 10000,initialDelay = 10000)
+    /**
+     * fixedDelay	上一次任务执行结束到下一次执行开始的间隔时间,单位为ms
+     * fixedRate	以固定间隔执行任务，即上一次任务执行开始到下一次执行开始的间隔时间,单位为ms,若在调度任务执行时,上一次任务还未执行完毕,会加入worker队列,等待上一次执行完成后立即执行下一次任务
+     * initialDelay	首次任务执行的延迟时间
+     */
+    @Scheduled(fixedDelay = 10000, initialDelay = 10000)
     public void addCustomerJob() {
 //        将任务拆分到任务细节表
         doTaskItem();
@@ -92,7 +96,7 @@ public class BatchAcceptCustomerJob {
             try (RedisFairLock redisFairLock = new RedisFairLock(priKey + ":" + task.getTaskId())) {
                 //是否可以获得锁,不能获得锁就不进行操作, 不需要进行等待
                 if (redisFairLock.tryLock()) {
-                    log.info("-----------------doTaskItem加锁"+redisFairLock.getkey());
+                    log.info("-----------------doTaskItem加锁" + redisFairLock.getkey());
                     //如果任务的数据为null,不用进行分解,直接将任务设置成处理成功即
                     if (Type.BATCH_ADD_CUSTOMER.equals(task.getType())) {
                         //设置总数并且修改任务状态
@@ -120,7 +124,7 @@ public class BatchAcceptCustomerJob {
         String[] customerArray = data.split(",");
         List<BatchTaskItem> taskItemList = Arrays.stream(customerArray)
                 .filter((cusName) -> !customerNameList.contains(cusName))
-                .map(name -> BatchTaskItem.getCustomerTaskItem(taskId,Status.PREPARING,name,22,"北京"))
+                .map(name -> BatchTaskItem.getCustomerTaskItem(taskId, Status.PREPARING, name, 22, "北京"))
                 .collect(Collectors.toList());
         //信息入库
         batchTaskItemRepository.saveAll(taskItemList);
